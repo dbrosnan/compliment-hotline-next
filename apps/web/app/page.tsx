@@ -19,7 +19,7 @@ export default function Page() {
           `isolation: isolate` locks this context so no ancestor can
           reorder the children. */}
       <section
-        className="relative w-full min-h-[630px] md:min-h-[780px] overflow-hidden bg-background"
+        className="relative w-full min-h-[740px] md:min-h-[920px] overflow-hidden bg-background"
         style={{ isolation: "isolate" }}
       >
         <div className="absolute inset-0 z-0" aria-hidden>
