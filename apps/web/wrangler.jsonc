@@ -1,0 +1,38 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "compliment-hotline-next",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-03-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": ".open-next/assets"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "compliment-hotline",
+      "database_id": "16191c2d-ec99-4065-b2f6-6785f6948bf0"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "AUDIO",
+      "bucket_name": "compliment-hotline-audio"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "RATE_LIMIT",
+      "id": "e1bedb8c7a864b8982d801e5d7ff7f60"
+    }
+  ],
+  "vars": {
+    "MAX_AUDIO_BYTES": "2097152",
+    "MAX_AUDIO_DURATION_MS": "30000",
+    "MAX_MESSAGE_CHARS": "500",
+    "MAX_NAME_CHARS": "60",
+    "FEED_PAGE_SIZE": "20",
+    "ALLOWED_MIME": "audio/webm;codecs=opus,audio/webm,audio/mp4,audio/ogg"
+  }
+}
