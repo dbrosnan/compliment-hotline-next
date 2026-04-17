@@ -68,7 +68,7 @@ export function Hero() {
       {videoOk && (
         <video
           ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover opacity-55"
+          className="absolute inset-0 w-full h-full object-contain opacity-55"
           autoPlay
           muted
           loop
