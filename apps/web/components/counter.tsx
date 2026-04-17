@@ -17,24 +17,22 @@ export function Counter() {
   const digits = String(count).padStart(5, "0").split("");
 
   return (
-    <section className="px-6 py-20">
-      <div className="mx-auto w-full max-w-3xl text-center">
-        <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
-          Total compliments received
-        </p>
-        <div className="flex justify-center gap-2">
-          {digits.map((d, i) => (
-            <div
-              key={i}
-              className="relative flex h-24 w-16 items-center justify-center rounded-lg border border-border/30 bg-background/80 font-display text-5xl text-citrus shadow-inner md:h-36 md:w-24 md:text-7xl"
-            >
-              <span className="relative z-10">{d}</span>
-              <div className="absolute inset-x-0 top-1/2 border-t border-border/15" />
-            </div>
-          ))}
-        </div>
-        <p className="mt-6 text-muted-foreground/80">and counting.</p>
+    <div className="mx-auto w-full max-w-3xl text-center">
+      <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
+        Total compliments received
+      </p>
+      <div className="flex justify-center gap-2">
+        {digits.map((d, i) => (
+          <div
+            key={i}
+            className="relative flex h-20 w-14 items-center justify-center rounded-lg border border-border/30 bg-background/80 font-display text-4xl text-citrus shadow-inner md:h-28 md:w-20 md:text-6xl"
+          >
+            <span className="relative z-10">{d}</span>
+            <div className="absolute inset-x-0 top-1/2 border-t border-border/15" />
+          </div>
+        ))}
       </div>
-    </section>
+      <p className="mt-4 text-muted-foreground/80 text-sm">and counting.</p>
+    </div>
   );
 }

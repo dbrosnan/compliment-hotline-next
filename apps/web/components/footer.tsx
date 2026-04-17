@@ -1,6 +1,7 @@
 "use client";
 
 import { ShimmerButton } from "@workspace/ui/components/shimmer-button";
+import { Counter } from "./counter";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -25,12 +26,11 @@ export function Footer() {
           COMPLIMENT HOTLINE
         </div>
 
-        <p
-          className="text-sm sm:text-base"
-          style={{ width: "100%", maxWidth: "32rem", marginLeft: "auto", marginRight: "auto" }}
-        >
-          An art piece, a cart, eight phones, and you.
-        </p>
+        {/* Running total counter — moved here from mid-page so the
+            wordmark + running tally live together as the footer cap. */}
+        <div className="pt-2 pb-4">
+          <Counter />
+        </div>
 
         <div className="flex justify-center pt-2">
           <ShimmerButton
@@ -71,6 +71,14 @@ export function Footer() {
             Say hi
           </a>
         </nav>
+
+        {/* Tagline now sits below the nav, just above the copyright */}
+        <p
+          className="text-sm sm:text-base"
+          style={{ width: "100%", maxWidth: "32rem", marginLeft: "auto", marginRight: "auto" }}
+        >
+          An art piece, a cart, eight phones, and you.
+        </p>
 
         <p
           className="text-xs text-muted-foreground/50"
