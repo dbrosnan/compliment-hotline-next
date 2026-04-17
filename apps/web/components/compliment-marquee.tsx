@@ -133,11 +133,11 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
                 style={{ animationDelay: delay }}
               >
                 <Card
-                  className="ch-glass inline-flex flex-col items-start gap-2 px-5 py-4 w-[280px] whitespace-normal border-0"
+                  className="ch-glass inline-flex flex-col items-start gap-4 px-6 py-7 w-[280px] min-h-[180px] whitespace-normal border-0"
                   aria-label={ariaLabel}
                 >
                   <div className="flex items-center gap-3 w-full relative z-10">
-                    <PsychedelicIcon id={c.id} size={36} />
+                    <PsychedelicIcon id={c.id} size={44} />
                     <span
                       className="font-display text-lg tracking-wide truncate flex-1"
                       style={{ color: "oklch(0.97 0.02 82)" }}
@@ -155,8 +155,8 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
                   </div>
                   {quote ? (
                     <p
-                      className="font-serif italic text-sm leading-snug line-clamp-2 relative z-10"
-                      style={{ color: "oklch(0.93 0.04 82 / 0.88)" }}
+                      className="font-serif italic text-base leading-relaxed line-clamp-3 relative z-10"
+                      style={{ color: "oklch(0.93 0.04 82 / 0.9)" }}
                     >
                       “{quote}”
                     </p>
@@ -233,7 +233,7 @@ function MarqueeSkeleton() {
         {Array.from({ length: 6 }).map((_, i) => (
           <Card
             key={i}
-            className="ch-glass shrink-0 inline-flex flex-col items-start gap-2 px-5 py-4 w-[280px] border-0"
+            className="ch-glass shrink-0 inline-flex flex-col items-start gap-4 px-6 py-7 w-[280px] min-h-[180px] border-0"
           >
             <div className="flex items-center gap-3 w-full">
               <Skeleton className="h-9 w-9 rounded-full" />

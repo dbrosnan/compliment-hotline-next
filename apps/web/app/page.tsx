@@ -19,7 +19,7 @@ export default function Page() {
           `isolation: isolate` locks this context so no ancestor can
           reorder the children. */}
       <section
-        className="relative w-full min-h-[420px] md:min-h-[520px] overflow-hidden bg-background"
+        className="relative w-full min-h-[630px] md:min-h-[780px] overflow-hidden bg-background"
         style={{ isolation: "isolate" }}
       >
         <div className="absolute inset-0 z-0" aria-hidden>
@@ -29,7 +29,7 @@ export default function Page() {
             exactly where the cards live so they clearly sit above it */}
         <div
           aria-hidden
-          className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-48 md:h-56 z-10 pointer-events-none"
+          className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-72 md:h-[336px] z-10 pointer-events-none"
           style={{
             background:
               "linear-gradient(180deg, transparent 0%, oklch(0.10 0.06 285 / 0.55) 25%, oklch(0.10 0.06 285 / 0.7) 50%, oklch(0.10 0.06 285 / 0.55) 75%, transparent 100%)",
