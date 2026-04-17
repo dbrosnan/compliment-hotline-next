@@ -10,6 +10,7 @@ import {
 } from "@workspace/ui/components/dialog";
 import type { ComplimentItem } from "@/lib/api";
 import { audioUrl } from "@/lib/api";
+import { getAnonName } from "@/lib/anon-names";
 import { useAudio } from "@/lib/use-audio";
 import { LiquidLightBackdrop } from "./liquid-light-backdrop";
 import { TravelingWaveform } from "./traveling-waveform";
@@ -127,7 +128,7 @@ export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Prop
                 className="font-display text-3xl md:text-5xl leading-none tracking-wide text-foreground"
                 style={{ width: "100%" }}
               >
-                {compliment.name || "a stranger"}
+                {compliment.name || getAnonName(compliment.id)}
               </blockquote>
               <div className="font-serif italic text-lg md:text-xl text-muted-foreground">
                 {hasEnded ? "said something kind." : "is saying something kind..."}

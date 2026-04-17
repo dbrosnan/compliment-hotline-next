@@ -6,6 +6,7 @@ import { Card } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { ShimmerButton } from "@workspace/ui/components/shimmer-button";
 import { fetchRecent, type ComplimentItem } from "@/lib/api";
+import { getAnonName } from "@/lib/anon-names";
 import { PsychedelicIcon } from "./psychedelic-icons";
 
 /**
@@ -110,7 +111,7 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
         >
           {doubled.map((c, i) => {
             const secs = c.duration_ms ? Math.round(c.duration_ms / 1000) : null;
-            const speaker = c.name || "a stranger";
+            const speaker = c.name || getAnonName(c.id);
             const quote = (c.transcript || "").trim();
             const ariaLabel = quote
               ? `${secs ?? "?"}s compliment from ${speaker}: ${quote}`
