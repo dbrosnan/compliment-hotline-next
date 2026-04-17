@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@workspace/ui/components/card";
+import { BorderBeam } from "@workspace/ui/components/border-beam";
 import { SectionHeading } from "./section-heading";
 import { RotaryRecorder } from "./rotary-recorder";
 
@@ -15,7 +16,26 @@ export function SubmitSection() {
           className="mb-10"
         />
 
-        <Card className="w-full bg-card/70 border-border/25 backdrop-blur-sm shadow-md">
+        <Card className="relative w-full bg-card/70 border-border/25 backdrop-blur-sm shadow-md overflow-hidden">
+          {/* Two counter-rotating comet beams for a "shooting star around
+              the card" effect — same citrus→coral gradient as the old
+              pick-up button. */}
+          <BorderBeam
+            size={220}
+            duration={9}
+            colorFrom="oklch(0.89 0.17 92 / 0.95)"
+            colorTo="oklch(0.72 0.21 22 / 0.95)"
+            borderWidth={1.5}
+          />
+          <BorderBeam
+            size={180}
+            duration={13}
+            delay={4}
+            reverse
+            colorFrom="oklch(0.70 0.28 338 / 0.85)"
+            colorTo="oklch(0.89 0.17 92 / 0.85)"
+            borderWidth={1.2}
+          />
           <CardContent className="w-full p-6 md:p-10">
             <RotaryRecorder />
           </CardContent>
