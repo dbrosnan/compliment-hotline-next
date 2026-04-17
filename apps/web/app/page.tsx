@@ -12,12 +12,17 @@ export default function Page() {
     <main className="relative overflow-x-hidden">
       <Hero />
       {/* Full-width psychedelic oscilloscope band with the LIVE marquee
-          floating glass-style above its centerline. */}
-      <section className="relative w-full min-h-[420px] md:min-h-[520px] overflow-hidden bg-background">
-        <div className="absolute inset-0" aria-hidden>
+          floating glass-style above its centerline. `isolation: isolate`
+          creates a fresh stacking context so the z-layering below is
+          absolute and can't be overridden by ancestor contexts. */}
+      <section
+        className="relative w-full min-h-[420px] md:min-h-[520px] overflow-hidden bg-background"
+        style={{ isolation: "isolate" }}
+      >
+        <div className="absolute inset-0 z-0" aria-hidden>
           <PsychedelicWaveform />
         </div>
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-10">
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-20">
           <ComplimentMarquee />
         </div>
       </section>
