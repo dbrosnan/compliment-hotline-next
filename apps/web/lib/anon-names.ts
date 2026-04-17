@@ -1,154 +1,52 @@
 /**
- * 100 playful placeholder names for anonymous compliments. Used in
- * place of "a stranger" on the LIVE marquee so a row of six un-named
- * submissions doesn't all read the same.
+ * 100 short (<8 char) placeholder names for anonymous compliments.
+ * Every entry is a single word, 3–7 characters, lowercase.
  *
- * The list mixes classic anon tropes ("anon", "a passerby"), era-cued
- * callbacks (disco, rotary phones, cassettes, fireflies), and warm
- * pocket-of-sunshine phrases. Kept lowercase to match the cards'
- * font-display rendering and the "a stranger" precedent.
+ * Grouped by flavor — classic anon, nature, cosmic, music/era, small
+ * animals, playful foods, mysterious, gems, warm vibes, and bright
+ * one-word nicknames.
  *
  * `getAnonName(id)` is deterministic — the same compliment id always
- * resolves to the same pseudo-name across renders and sessions so
- * people don't see a card flicker between aliases.
+ * resolves to the same alias across renders and sessions.
  */
 export const ANON_NAMES: readonly string[] = [
-  // classic placeholders
-  "a stranger",
-  "anon",
-  "jon doe",
-  "jane doe",
-  "someone",
-  "a passerby",
-  "a friend of a friend",
-  "a friend you haven't met",
-  "an unknown caller",
-  "caller ID unknown",
+  // classic anon (10)
+  "anon", "jon", "jane", "doe", "nemo", "x", "y", "z", "nobody", "stealth",
 
-  // warm / kind
-  "a kind soul",
-  "a gentle soul",
-  "a soft voice",
-  "a quiet hero",
-  "a bright light",
-  "a cozy human",
-  "a tender heart",
-  "someone who cares",
-  "a good stranger",
-  "a kind voice",
+  // nature / flora (10)
+  "moon", "sun", "star", "sky", "bloom", "leaf", "fern", "sage", "ivy", "poppy",
 
-  // nocturnal / dreamy
-  "a night owl",
-  "a day dreamer",
-  "a moonwalker",
-  "a stargazer",
-  "a moonbeam",
-  "a lullaby",
-  "a whisperer",
-  "a sleepwalker",
-  "a dream catcher",
-  "a lamp lighter",
+  // more nature (10)
+  "daisy", "clover", "mist", "dusk", "dawn", "rain", "cloud", "river", "pebble", "breeze",
 
-  // disco / festival / analog era
-  "a disco kid",
-  "a roller skater",
-  "a cassette tape",
-  "a vinyl scratcher",
-  "a tambourine",
-  "a disco ball",
-  "a glitter cannon",
-  "a dust particle in a sunbeam",
-  "a pay phone",
-  "a hotline hero",
+  // cosmic / sparkle (10)
+  "nova", "orbit", "halo", "echo", "glow", "flare", "spark", "ember", "blaze", "prism",
 
-  // cosmic / sparkle
-  "a firefly",
-  "a glitter witch",
-  "a star scout",
-  "a sun seeker",
-  "a cosmic friend",
-  "a sparkle pusher",
-  "a twinkle",
-  "a good cloud",
-  "a dimension hopper",
-  "a rainbow chaser",
+  // music / era (10)
+  "disco", "vinyl", "funk", "groove", "beat", "pulse", "tempo", "tune", "jazzy", "retro",
 
-  // mysterious
-  "a shadow",
-  "a phantom caller",
-  "a mystery caller",
-  "a secret admirer",
-  "a voice in the crowd",
-  "an echo",
-  "a postcard from nowhere",
-  "a happy accident",
-  "a good samaritan",
-  "a forgotten friend",
+  // small animals (10)
+  "owl", "bee", "fox", "cat", "mouse", "bunny", "koala", "otter", "puffin", "ferret",
 
-  // sound / wave metaphors
-  "a wavelength",
-  "a frequency",
-  "a sound wave",
-  "a standing wave",
-  "a sine wave",
-  "a heartbeat",
-  "a pulse",
-  "a ripple",
-  "a human radio",
-  "a heart on a wire",
+  // nicknames (10)
+  "pip", "scout", "ziggy", "bingo", "cosmo", "dizzy", "fizzy", "lucky", "ducky", "happy",
 
-  // delivery / courier vibe
-  "a joy deliverer",
-  "a hope whisperer",
-  "a smile dealer",
-  "a compliment bandit",
-  "a compliment merchant",
-  "a kindness courier",
-  "a day saver",
-  "a mood lifter",
-  "a smile engineer",
-  "a joy smith",
+  // playful / foods (10)
+  "giggle", "wiggle", "noodle", "waffle", "pickle", "bagel", "cookie", "muffin", "peanut", "pepper",
 
-  // poetic nature
-  "a warm breeze",
-  "a wildflower",
-  "a sun ray",
-  "a golden hour",
-  "a slow dance",
-  "a pocket of sunshine",
-  "a light leak",
-  "a love letter",
-  "a candle in the window",
-  "a little bird",
+  // mysterious (10)
+  "ghost", "mystic", "shadow", "wraith", "phantom", "cipher", "rogue", "bandit", "hush", "oracle",
 
-  // playful
-  "a silly goose",
-  "a gentle giant",
-  "a tiny dancer",
-  "a human hug",
-  "a soft landing",
-  "a warm hello",
-  "a happy fluke",
-  "a random spark",
-  "a quiet listener",
-  "a song stuck in your head",
-
-  // future-facing + wink
-  "a future friend",
-  "a wanderer",
-  "a phone friend",
-  "a festival stranger",
-  "a dance partner",
-  "a big heart",
-  "a tiny moon",
-  "a sweet unknown",
-  "a good fluke",
-  "a wild card",
+  // gems + warm vibes (10)
+  "onyx", "opal", "ruby", "pearl", "jade", "amber", "topaz", "coral", "crystal", "agate",
 ] as const;
 
-if (process.env.NODE_ENV !== "production" && ANON_NAMES.length !== 100) {
-  // dev-only integrity check
-  console.warn(`ANON_NAMES has ${ANON_NAMES.length} entries, expected 100`);
+if (process.env.NODE_ENV !== "production") {
+  if (ANON_NAMES.length !== 100) {
+    console.warn(`ANON_NAMES has ${ANON_NAMES.length} entries, expected 100`);
+  }
+  const tooLong = ANON_NAMES.filter((n) => n.length >= 8);
+  if (tooLong.length) console.warn(`ANON_NAMES entries >=8 chars:`, tooLong);
 }
 
 /**
