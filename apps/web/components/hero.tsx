@@ -1,0 +1,235 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Button } from "@workspace/ui/components/button";
+import { DiscoBall } from "./disco-ball";
+import { SparkleField } from "./sparkle-field";
+import { PickUpModal } from "./pick-up-modal";
+import { fetchRecent, type ComplimentItem } from "@/lib/api";
+
+const WORDS = "COMPLIMENT".split("");
+
+const FALLBACK_COMPLIMENTS: ComplimentItem[] = [
+  { id: -101, name: "a stranger", message: "your laugh is contagious and i hope you know it", has_audio: false, duration_ms: null, created_at: 0 },
+  { id: -102, name: null, message: "you're a good one. keep going.", has_audio: false, duration_ms: null, created_at: 0 },
+  { id: -103, name: "M", message: "that jacket? a choice. and the right one.", has_audio: false, duration_ms: null, created_at: 0 },
+  { id: -104, name: null, message: "you're allowed to take up space. please do.", has_audio: false, duration_ms: null, created_at: 0 },
+  { id: -105, name: "phone 3", message: "whoever picks up next, i hope your day breaks open softly", has_audio: false, duration_ms: null, created_at: 0 },
+];
+
+export function Hero() {
+  const [mounted, setMounted] = useState(false);
+  const [videoOk, setVideoOk] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [pool, setPool] = useState<ComplimentItem[]>(FALLBACK_COMPLIMENTS);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selected, setSelected] = useState<ComplimentItem | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+    fetchRecent()
+      .then((data) => {
+        const withMsg = data.items.filter((c) => c.message);
+        if (withMsg.length > 0) setPool(withMsg);
+      })
+      .catch(() => {});
+  }, []);
+
+  const pickUp = () => {
+    const c = pool[Math.floor(Math.random() * pool.length)];
+    if (!c) return;
+    setSelected(c);
+    setModalOpen(true);
+  };
+
+  const onFinished = () => {
+    setModalOpen(false);
+    setTimeout(() => {
+      const el = document.getElementById("submit");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  return (
+    <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
+      {/* Remotion hero video — muted, loop, inline, poster fallback */}
+      {videoOk && (
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/hero-poster.jpg"
+          onError={() => setVideoOk(false)}
+          aria-hidden
+        >
+          <source src="/hero.mp4" type="video/mp4" />
+        </video>
+      )}
+
+      {/* Ambient atmosphere */}
+      <div className="pointer-events-none absolute inset-0">
+        <SparkleField count={48} />
+        <div className="absolute top-10 right-10 h-28 w-28 opacity-70">
+          <DiscoBall />
+        </div>
+      </div>
+
+      {/* Scanlines + vignette */}
+      <div
+        className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-50"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 3px)",
+        }}
+        aria-hidden
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background" />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 text-center">
+        <p className="font-mono mb-6 text-xs uppercase tracking-[0.3em] text-muted-foreground opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:1400ms]">
+          📞 An analog art piece for a digital disco
+        </p>
+
+        <h1 className="font-display whitespace-nowrap text-[clamp(2.5rem,9vw,7rem)] leading-none tracking-wide text-foreground">
+          {WORDS.map((ch, i) => (
+            <span
+              key={i}
+              className="inline-block opacity-0"
+              style={{
+                animation: mounted ? "ch-drop 700ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards" : "none",
+                animationDelay: `${i * 60}ms`,
+                textShadow: "2px 0 0 oklch(0.70 0.28 338 / 0.7), -2px 0 0 oklch(0.89 0.15 162 / 0.7)",
+              }}
+            >
+              {ch}
+            </span>
+          ))}
+        </h1>
+
+        <div className="font-display mt-2 text-[clamp(2rem,6vw,4.5rem)] leading-none tracking-widest text-accent">
+          HOTLINE
+        </div>
+
+        <p className="font-serif italic mx-auto mt-6 max-w-xl text-lg md:text-xl text-muted-foreground leading-relaxed opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:1600ms]">
+          Pick up the phone. Hear a compliment from a stranger. Leave one for the next person.
+        </p>
+
+        {/* The big pick-up button */}
+        <div className="mt-10 opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:2000ms]">
+          <button
+            onClick={pickUp}
+            aria-label="Pick up the phone to hear a compliment"
+            className="group relative inline-flex flex-col items-center focus:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 rounded-3xl"
+          >
+            <div className="absolute -inset-8 rounded-full bg-primary/20 blur-2xl transition-all duration-500 group-hover:bg-primary/40 group-hover:scale-110" />
+            <div className="absolute -inset-4 rounded-full bg-magenta/20 blur-xl transition-all duration-500 group-hover:bg-magenta/30" />
+
+            <div className="relative">
+              <div className="animate-[ch-ring_4s_ease-in-out_infinite]">
+                <HandsetSVG />
+              </div>
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-cream text-midnight shadow-glow ring-4 ring-primary/40 transition-transform duration-300 group-hover:scale-110 group-active:scale-95 animate-pulse md:h-28 md:w-28">
+                  <PlayIcon />
+                </div>
+              </div>
+            </div>
+
+            <div className="font-display mt-8 max-w-3xl text-[clamp(1.6rem,4.5vw,3rem)] leading-tight tracking-wide text-accent drop-shadow-[0_4px_20px_oklch(0.89_0.17_92/0.4)]">
+              pick up the phone
+              <br />
+              <span className="text-coral">for a pick-me-up</span>
+            </div>
+
+            <div className="font-mono mt-4 text-sm uppercase tracking-[0.3em] text-muted-foreground">
+              ▸ click to answer
+            </div>
+          </button>
+        </div>
+
+        <div className="mt-10 flex flex-wrap justify-center gap-4 opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:2200ms]">
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <a href="#how">How it works</a>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <a href="#submit">Skip to leaving one</a>
+          </Button>
+        </div>
+      </div>
+
+      <PickUpModal
+        open={modalOpen}
+        compliment={selected}
+        onOpenChange={setModalOpen}
+        onFinished={onFinished}
+      />
+
+      <style>{`
+        @keyframes ch-drop {
+          0% { transform: translateY(-40px); opacity: 0; filter: blur(8px); }
+          100% { transform: translateY(0); opacity: 1; filter: blur(0); }
+        }
+        @keyframes ch-fade {
+          to { opacity: 1; }
+        }
+        @keyframes ch-ring {
+          0%, 92%, 100% { transform: rotate(0deg); }
+          94% { transform: rotate(-3deg); }
+          96% { transform: rotate(3deg); }
+          98% { transform: rotate(-1.5deg); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [style*="animation"] { animation: none !important; }
+        }
+      `}</style>
+    </section>
+  );
+}
+
+function PlayIcon() {
+  return (
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M6 4.5v15a1 1 0 0 0 1.555.832l12-7.5a1 1 0 0 0 0-1.664l-12-7.5A1 1 0 0 0 6 4.5Z" />
+    </svg>
+  );
+}
+
+function HandsetSVG() {
+  return (
+    <svg
+      width="220"
+      height="220"
+      viewBox="0 0 140 140"
+      fill="none"
+      aria-hidden
+      className="drop-shadow-[0_10px_40px_oklch(0.72_0.21_22/0.55)]"
+    >
+      <defs>
+        <linearGradient id="handsetGradHero" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="oklch(0.72 0.21 22)" />
+          <stop offset="100%" stopColor="oklch(0.70 0.28 338)" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M30 45 C30 25, 50 15, 70 25 L95 50 C115 70, 105 90, 85 100 L75 90 C65 80, 55 70, 45 60 Z"
+        fill="url(#handsetGradHero)"
+        stroke="oklch(0.93 0.04 82)"
+        strokeWidth="2"
+      />
+      <circle cx="40" cy="40" r="3" fill="oklch(0.93 0.04 82)" opacity="0.6" />
+      <circle cx="47" cy="35" r="3" fill="oklch(0.93 0.04 82)" opacity="0.6" />
+      <circle cx="35" cy="47" r="3" fill="oklch(0.93 0.04 82)" opacity="0.6" />
+      <path
+        d="M35 50 Q 25 60, 32 70 Q 20 78, 28 88 Q 15 96, 24 108 Q 12 116, 22 128"
+        stroke="oklch(0.72 0.21 22)"
+        strokeWidth="3"
+        fill="none"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
