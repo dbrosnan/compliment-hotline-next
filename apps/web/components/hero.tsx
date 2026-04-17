@@ -69,6 +69,7 @@ export function Hero() {
         <video
           ref={videoRef}
           className="absolute inset-0 w-full h-full object-contain opacity-55"
+          style={{ transform: "scale(0.85)", transformOrigin: "center" }}
           autoPlay
           muted
           loop
