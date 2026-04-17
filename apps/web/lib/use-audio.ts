@@ -14,6 +14,9 @@ export type AudioState = {
   phase: AudioPhase;
   elapsed: number;
   pulses: AudioPulse[];
+  /** Detail attached when phase === "error" so the modal can show a
+   *  useful message (e.g. codec not supported on this device). */
+  errorDetail?: { kind: "format" | "network" | "other"; message: string };
   /** Unused for audio; kept for TravelingWaveform prop-shape compatibility. */
   wordIndex: number;
   currentCharStart: number;
@@ -51,6 +54,7 @@ export function useAudio(
   const [phase, setPhase] = useState<AudioPhase>("idle");
   const [elapsed, setElapsed] = useState(0);
   const [pulses, setPulses] = useState<AudioPulse[]>([]);
+  const [errorDetail, setErrorDetail] = useState<AudioState["errorDetail"]>();
 
   const startedAt = useRef(0);
   const pulseId = useRef(0);
@@ -119,6 +123,21 @@ export function useAudio(
     };
     audio.onerror = () => {
       if (pulseTimer.current) clearInterval(pulseTimer.current);
+      const code = audio.error?.code;
+      // HTMLMediaElement.MediaError codes:
+      //  1 ABORTED, 2 NETWORK, 3 DECODE, 4 SRC_NOT_SUPPORTED
+      const kind: AudioState["errorDetail"] = (() => {
+        if (code === 2) return { kind: "network", message: "Couldn't reach the recording." };
+        if (code === 4 || code === 3)
+          return {
+            kind: "format",
+            message:
+              "This recording's format isn't playable on your device. Usually iPhone + a WebM/Opus file. Try another compliment.",
+          };
+        return { kind: "other", message: audio.error?.message || "Playback failed." };
+      })();
+      console.warn("[useAudio] playback error", { code, src, kind });
+      setErrorDetail(kind);
       setPhase("error");
     };
     audio.onpause = () => {
@@ -128,7 +147,14 @@ export function useAudio(
 
     // Small "ringing" beat so the modal's atmospheric intro isn't skipped
     ringingTimer.current = setTimeout(() => {
-      audio.play().catch(() => setPhase("error"));
+      audio.play().catch((e) => {
+        console.warn("[useAudio] play() rejected", e);
+        setErrorDetail({
+          kind: "other",
+          message: e instanceof Error ? e.message : "Playback was blocked by the browser.",
+        });
+        setPhase("error");
+      });
     }, RINGING_MS);
   }, [src, cancel]);
 
@@ -161,6 +187,7 @@ export function useAudio(
     phase,
     elapsed,
     pulses,
+    errorDetail,
     wordIndex: -1,
     currentCharStart: 0,
     currentCharEnd: 0,

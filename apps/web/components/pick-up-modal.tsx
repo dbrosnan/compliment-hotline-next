@@ -21,6 +21,9 @@ type Props = {
   compliment: ComplimentItem | null;
   onOpenChange: (open: boolean) => void;
   onFinished: () => void;
+  /** Swap to a different compliment (e.g. when the current one fails
+   *  to decode on the user's device). */
+  onTryAnother?: () => void;
 };
 
 /**
@@ -32,7 +35,13 @@ type Props = {
  *   3. Speaking phase with TravelingWaveform reacting to pulses
  *   4. "Delivered" phase, then idle -> parent scrolls to submit
  */
-export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Props) {
+export function PickUpModal({
+  open,
+  compliment,
+  onOpenChange,
+  onFinished,
+  onTryAnother,
+}: Props) {
   const src = compliment ? audioUrl(compliment.id) : null;
   const audio = useAudio(src, { active: open && !!src });
   const [showCaptions, setShowCaptions] = useState(false);
@@ -171,9 +180,30 @@ export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Prop
           )}
 
           {isError && (
-            <div className="py-8 text-center space-y-2">
+            <div className="py-8 text-center space-y-4">
               <p className="text-destructive font-mono text-sm">the line dropped.</p>
-              <p className="text-muted-foreground text-sm">try another, or record your own below.</p>
+              <p className="text-muted-foreground text-sm max-w-sm mx-auto">
+                {audio.errorDetail?.message ||
+                  "Playback failed. Try another, or record your own below."}
+              </p>
+              <div className="flex gap-2 justify-center pt-1">
+                {onTryAnother && (
+                  <button
+                    type="button"
+                    onClick={onTryAnother}
+                    className="font-mono text-xs uppercase tracking-[0.2em] px-4 py-2 rounded-full border border-border/40 hover:border-citrus hover:text-citrus transition-colors"
+                  >
+                    Try another
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => onOpenChange(false)}
+                  className="font-mono text-xs uppercase tracking-[0.2em] px-4 py-2 rounded-full border border-border/40 hover:border-coral hover:text-coral transition-colors"
+                >
+                  Close
+                </button>
+              </div>
             </div>
           )}
 

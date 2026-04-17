@@ -2,6 +2,10 @@ export type ComplimentItem = {
   id: number;
   name: string | null;
   has_audio: boolean;
+  /** MIME type of the stored audio, e.g. "audio/webm;codecs=opus" or
+   *  "audio/mp4". Used to pre-filter clips the device's browser can't
+   *  decode (notably iOS Safari can't play WebM/Opus). */
+  mime_type?: string | null;
   duration_ms: number | null;
   /** Populated by Workers AI Whisper after approval. Used for a11y
    *  (aria-label on the marquee + pickup modal) — NOT displayed as

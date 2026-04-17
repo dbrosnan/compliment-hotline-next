@@ -8,6 +8,7 @@ type Row = {
   id: number;
   name: string | null;
   audio_key: string | null;
+  mime_type: string | null;
   duration_ms: number | null;
   transcript: string | null;
   created_at: number;
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
         const c = decodeCursor(cursor);
         if (!c) return null;
         return env.DB.prepare(
-          `SELECT id, name, audio_key, duration_ms, transcript, created_at, status
+          `SELECT id, name, audio_key, mime_type, duration_ms, transcript, created_at, status
            FROM compliments
            WHERE status = 'approved'
              AND audio_key IS NOT NULL
@@ -52,7 +53,7 @@ export async function GET(request: NextRequest) {
         ).bind(c.ts, c.ts, c.id, limit);
       })()
     : env.DB.prepare(
-        `SELECT id, name, audio_key, duration_ms, transcript, created_at, status
+        `SELECT id, name, audio_key, mime_type, duration_ms, transcript, created_at, status
          FROM compliments
          WHERE status = 'approved'
            AND audio_key IS NOT NULL
@@ -68,6 +69,7 @@ export async function GET(request: NextRequest) {
     id: r.id,
     name: r.name,
     has_audio: !!r.audio_key,
+    mime_type: r.mime_type,
     duration_ms: r.duration_ms,
     transcript: r.transcript,
     created_at: r.created_at,

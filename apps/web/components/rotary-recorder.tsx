@@ -34,7 +34,17 @@ export function RotaryRecorder() {
   }, []);
 
   const pickMime = () => {
-    const candidates = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"];
+    // Prefer mp4/aac first — iOS Safari and its webviews (Discord,
+    // Instagram, etc.) can't play WebM/Opus, so recording in mp4 when
+    // possible keeps uploads universally playable. WebM is a fallback
+    // for Firefox / older Chromium where mp4 MediaRecorder isn't wired.
+    const candidates = [
+      "audio/mp4;codecs=mp4a.40.2", // AAC-LC in mp4 (widest playback)
+      "audio/mp4",
+      "audio/aac",
+      "audio/webm;codecs=opus",
+      "audio/webm",
+    ];
     for (const m of candidates) {
       if (typeof MediaRecorder !== "undefined" && MediaRecorder.isTypeSupported(m)) return m;
     }

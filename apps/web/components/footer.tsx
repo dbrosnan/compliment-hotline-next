@@ -8,6 +8,19 @@ export function Footer() {
   const scrollToSubmit = () => {
     document.getElementById("submit")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+  // Obfuscated mailto — the address is never written to the rendered
+  // HTML or as a literal href for scrapers to harvest. Assembled at
+  // click time from rot13'd parts and opened via window.location.
+  const rot13 = (s: string) =>
+    s.replace(/[a-zA-Z]/g, (c) => {
+      const base = c <= "Z" ? 65 : 97;
+      return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
+    });
+  const sayHi = () => {
+    const user = rot13("qerjoebfnna"); // drewbrosnan
+    const domain = rot13("tznvy.pbz"); // gmail.com
+    window.location.href = `mailto:${user}@${domain}`;
+  };
   return (
     <footer
       className="border-t border-border/30 py-12 px-6 text-center text-sm text-muted-foreground"
@@ -63,13 +76,14 @@ export function Footer() {
           >
             Leave one
           </a>
-          <a
-            href="mailto:hello@complimenthotline.org"
-            className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded whitespace-nowrap"
-            aria-label="Email hello at complimenthotline dot org"
+          <button
+            type="button"
+            onClick={sayHi}
+            className="hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded whitespace-nowrap cursor-pointer bg-transparent border-0 p-0 font-[inherit] text-inherit"
+            aria-label="Open your email client to say hi"
           >
             Say hi
-          </a>
+          </button>
         </nav>
 
         {/* Tagline now sits below the nav, just above the copyright */}

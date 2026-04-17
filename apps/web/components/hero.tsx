@@ -33,7 +33,19 @@ export function Hero() {
         const approvedAudio = data.items.filter(
           (c) => c.status === "approved" && c.has_audio,
         );
-        setPool(approvedAudio);
+        // Pre-filter by what THIS browser can play. iOS Safari can't
+        // decode WebM/Opus, so serving a webm to an iPhone produces a
+        // "line dropped" error. canPlayType returns "" when no chance,
+        // "maybe" or "probably" when possible — keep those.
+        const probe = typeof document !== "undefined" ? document.createElement("audio") : null;
+        const playable = approvedAudio.filter((c) => {
+          if (!c.mime_type || !probe) return true; // unknown MIME → attempt anyway
+          // Strip codec params for the canPlayType check when the
+          // full string returns "" — e.g. some Safari versions accept
+          // "audio/mp4" but not "audio/mp4;codecs=mp4a.40.2".
+          return !!probe.canPlayType(c.mime_type) || !!probe.canPlayType(c.mime_type.split(";")[0]!);
+        });
+        setPool(playable.length ? playable : approvedAudio);
       })
       .catch(() => {
         setPool([]);
@@ -51,6 +63,15 @@ export function Hero() {
     if (!c) return;
     setSelected(c);
     setModalOpen(true);
+  };
+
+  const tryAnother = () => {
+    if (pool.length < 2) return;
+    // Pick any other compliment from the pool, excluding the current one.
+    const others = pool.filter((c) => c.id !== selected?.id);
+    const c = others[Math.floor(Math.random() * others.length)] ?? pool[0];
+    if (!c) return;
+    setSelected(c);
   };
 
   const onFinished = () => {
@@ -220,6 +241,7 @@ export function Hero() {
         compliment={selected}
         onOpenChange={setModalOpen}
         onFinished={onFinished}
+        onTryAnother={tryAnother}
       />
 
       <style>{`
