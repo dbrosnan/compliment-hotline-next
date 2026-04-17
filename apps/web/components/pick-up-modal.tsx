@@ -13,6 +13,7 @@ import { useSpeech } from "@/lib/use-speech";
 import { LiquidLightBackdrop } from "./liquid-light-backdrop";
 import { ComplimentText } from "./compliment-text";
 import { TravelingWaveform } from "./traveling-waveform";
+import { BorderBeam } from "@workspace/ui/components/border-beam";
 
 type Props = {
   open: boolean;
@@ -65,6 +66,14 @@ export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Prop
         <LiquidLightBackdrop phase={phase} pulseKey={speech.pulses.length} />
 
         <div className="ch-card relative rounded-3xl p-8 md:p-14 text-center backdrop-blur-md backdrop-saturate-150 bg-card/55 border border-border/25">
+          {/* subtle traveling highlight on the card edge */}
+          <BorderBeam
+            size={120}
+            duration={8}
+            colorFrom="oklch(0.89 0.17 92 / 0.9)"
+            colorTo="oklch(0.70 0.28 338 / 0.9)"
+            borderWidth={1.5}
+          />
           <DialogHeader className="items-center gap-4 text-center">
             <DialogTitle asChild>
               <div

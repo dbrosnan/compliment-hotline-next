@@ -303,7 +303,8 @@ export default function ComplimentsAdminPage() {
 
         {/* Table */}
         <div className="card bg-card/40 border border-border/30 rounded-lg overflow-hidden">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm" aria-label="All compliments">
+            <caption className="sr-only">All compliments across every status, filtered by the tabs above.</caption>
             <thead className="bg-background/40">
               <tr className="text-left">
                 <th className="p-3 w-10">
@@ -381,25 +382,37 @@ export default function ComplimentsAdminPage() {
                   <td className="p-3 text-right">
                     <div className="inline-flex gap-1">
                       {r.status !== "approved" && (
-                        <Button size="sm" variant="outline" onClick={() => act("approve", [r.id])} disabled={busy}>
-                          ✓
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          aria-label={`Approve compliment ${r.id}`}
+                          onClick={() => act("approve", [r.id])}
+                          disabled={busy}
+                        >
+                          <span aria-hidden>✓</span>
                         </Button>
                       )}
                       {r.audio_key && (
-                        <Button size="sm" variant="outline" onClick={() => downloadAudio(r)}>
-                          ⬇
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          aria-label={`Download audio for compliment ${r.id}`}
+                          onClick={() => downloadAudio(r)}
+                        >
+                          <span aria-hidden>⬇</span>
                         </Button>
                       )}
                       <Button
                         size="sm"
                         variant="outline"
+                        aria-label={`Delete compliment ${r.id}`}
                         className="text-destructive hover:bg-destructive/10"
                         onClick={() => {
                           if (confirm(`Delete compliment #${r.id}?`)) act("delete", [r.id]);
                         }}
                         disabled={busy}
                       >
-                        🗑
+                        <span aria-hidden>🗑</span>
                       </Button>
                     </div>
                   </td>
@@ -415,7 +428,11 @@ export default function ComplimentsAdminPage() {
       </div>
 
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-card border border-border rounded-lg px-4 py-2 text-sm shadow-md font-mono">
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-card border border-border rounded-lg px-4 py-2 text-sm shadow-md font-mono"
+        >
           {toast}
         </div>
       )}

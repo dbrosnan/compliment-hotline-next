@@ -1,4 +1,6 @@
 import { Card, CardContent } from "@workspace/ui/components/card";
+import { Reveal } from "./motion-primitives";
+import { SectionHeading } from "./section-heading";
 
 const STEPS = [
   {
@@ -31,26 +33,20 @@ export function HowItWorks() {
   return (
     <section id="how" className="relative px-6 py-24 md:py-32">
       <div className="mx-auto w-full max-w-6xl">
-        <div className="mb-16 text-center">
-          <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
-            The whole bit
-          </p>
-          <h2 className="font-display text-5xl md:text-7xl text-foreground">HOW IT WORKS</h2>
-        </div>
+        <SectionHeading eyebrow="The whole bit" title="HOW IT WORKS" className="mb-16" />
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s) => (
-            <Card
-              key={s.n}
-              className="group relative overflow-hidden bg-card/60 border-border/30 p-0"
-            >
-              <CardContent className="p-6">
-                <div className={`font-display text-5xl ${s.accent} mb-4`}>{s.n}</div>
-                <h3 className="text-2xl font-semibold text-foreground mb-2">{s.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{s.body}</p>
-              </CardContent>
-              <div className="pointer-events-none absolute -bottom-10 -right-10 h-32 w-32 rounded-full bg-coral/10 blur-2xl transition-colors duration-500 group-hover:bg-coral/30" />
-            </Card>
+          {STEPS.map((s, i) => (
+            <Reveal key={s.n} index={i}>
+              <Card className="group relative overflow-hidden bg-card/60 border-border/30 p-0">
+                <CardContent className="p-6">
+                  <div className={`font-display text-5xl ${s.accent} mb-4`}>{s.n}</div>
+                  <h3 className="text-2xl font-semibold text-foreground mb-2">{s.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{s.body}</p>
+                </CardContent>
+                <div className="pointer-events-none absolute -bottom-10 -right-10 h-32 w-32 rounded-full bg-coral/10 blur-2xl transition-colors duration-500 group-hover:bg-coral/30" />
+              </Card>
+            </Reveal>
           ))}
         </div>
       </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@workspace/ui/components/button";
+import { BorderBeam } from "@workspace/ui/components/border-beam";
 import { DiscoBall } from "./disco-ball";
 import { SparkleField } from "./sparkle-field";
 import { PhoneParade } from "./phone-parade";
@@ -146,6 +147,13 @@ export function Hero() {
             aria-label="Pick up the phone to hear a compliment"
             className="group relative inline-flex flex-col items-center focus:outline-none focus-visible:ring-4 focus-visible:ring-ring/40 rounded-3xl"
           >
+            <BorderBeam
+              size={160}
+              duration={7}
+              colorFrom="oklch(0.89 0.17 92 / 0.9)"
+              colorTo="oklch(0.72 0.21 22 / 0.9)"
+              borderWidth={1.5}
+            />
             <div className="absolute -inset-8 rounded-full bg-primary/20 blur-2xl transition-all duration-500 group-hover:bg-primary/40 group-hover:scale-110" />
             <div className="absolute -inset-4 rounded-full bg-magenta/20 blur-xl transition-all duration-500 group-hover:bg-magenta/30" />
 

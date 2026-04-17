@@ -239,3 +239,16 @@
     color: var(--ch-midnight);
   }
 }
+
+/* ─── Reduced motion fallback ──────────────────────────────────────────
+ * Global safety net. Every CSS animation/transition above 10ms is
+ * effectively disabled. Component-level Framer Motion also respects
+ * prefers-reduced-motion via the useReducedMotion hook. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

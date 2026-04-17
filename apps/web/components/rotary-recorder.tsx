@@ -154,26 +154,41 @@ export function RotaryRecorder() {
       <div className="flex flex-col items-center gap-4 py-6">
         <RotaryDial
           state={state}
+          elapsedSeconds={seconds}
           onClick={state === "idle" ? start : state === "recording" ? stop : undefined}
         />
 
-        <div className="font-display text-4xl text-citrus tabular-nums">
+        <div className="font-display text-4xl text-citrus tabular-nums" aria-hidden>
           {String(seconds).padStart(2, "0")}
           <span className="text-muted-foreground/40">s</span>
           <span className="text-muted-foreground/30 text-lg"> / 30s</span>
         </div>
 
+        {/* Screen-reader live region for state announcements */}
+        <p role="status" aria-live="polite" className="sr-only">
+          {state === "idle" && "Ready to record. Press Space or Enter on the dial to begin."}
+          {state === "recording" && `Recording. ${seconds} seconds of 30.`}
+          {state === "review" && "Recording complete. Review before sending."}
+          {state === "uploading" && "Uploading your compliment."}
+          {state === "error" && "Error. See message below."}
+        </p>
+
         {state === "recording" && (
-          <div className="w-full max-w-xs h-1 bg-background/50 rounded-full overflow-hidden">
+          <div className="w-full max-w-xs h-1 bg-background/50 rounded-full overflow-hidden" aria-hidden>
             <div className="h-full bg-primary transition-all" style={{ width: `${pct}%` }} />
           </div>
         )}
 
         {state === "idle" && (
-          <div className="text-sm text-muted-foreground">Click the dial to start recording</div>
+          <p className="text-sm text-muted-foreground">
+            Click the dial to start recording.{" "}
+            <span className="text-muted-foreground/60">
+              Keyboard: <kbd className="font-mono text-xs px-1 rounded bg-muted">Space</kbd> or <kbd className="font-mono text-xs px-1 rounded bg-muted">Enter</kbd>.
+            </span>
+          </p>
         )}
         {state === "recording" && (
-          <div className="text-sm text-primary flex items-center gap-2">
+          <div className="text-sm text-primary flex items-center gap-2" aria-hidden>
             <span className="inline-block w-2 h-2 rounded-full bg-primary animate-pulse" />
             Recording — click dial to stop
           </div>
@@ -203,17 +218,32 @@ export function RotaryRecorder() {
   );
 }
 
-function RotaryDial({ state, onClick }: { state: State; onClick?: () => void }) {
+function RotaryDial({
+  state,
+  elapsedSeconds,
+  onClick,
+}: {
+  state: State;
+  elapsedSeconds: number;
+  onClick?: () => void;
+}) {
   const active = state === "recording";
+  const label =
+    state === "idle"
+      ? "Start recording a compliment"
+      : state === "recording"
+        ? `Stop recording. ${elapsedSeconds} seconds of 30.`
+        : "Dial";
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={!onClick}
-      className={`relative w-48 h-48 rounded-full transition-transform focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/50 ${
+      className={`relative w-48 h-48 rounded-full transition-transform focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background ${
         onClick ? "hover:scale-105 active:scale-95 cursor-pointer" : "cursor-default"
       }`}
-      aria-label={state === "idle" ? "Start recording" : state === "recording" ? "Stop recording" : "Dial"}
+      aria-label={label}
+      aria-pressed={active}
     >
       <svg
         viewBox="0 0 200 200"

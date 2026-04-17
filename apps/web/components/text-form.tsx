@@ -86,22 +86,26 @@ export function TextForm() {
           required
           rows={5}
           placeholder="your laugh is contagious and i hope you know it"
+          aria-describedby="ch-message-hint ch-message-count"
           className="min-h-[8rem] rounded-lg bg-background/40 border-border/50 focus-visible:border-primary focus-visible:ring-primary/40 font-serif text-lg leading-snug resize-none"
         />
         <div className="flex justify-between text-xs text-muted-foreground">
-          <span>Be kind. Be specific.</span>
-          <span className="font-mono">
+          <span id="ch-message-hint">Be kind. Be specific.</span>
+          <span id="ch-message-count" className="font-mono" aria-live="polite">
             {message.length} / {MAX}
           </span>
         </div>
       </div>
 
-      {status === "err" && <p className="text-destructive text-sm">{error}</p>}
+      {status === "err" && (
+        <p className="text-destructive text-sm" role="alert">{error}</p>
+      )}
 
       <Button
         type="submit"
         size="lg"
         disabled={status === "sending" || !message.trim()}
+        aria-busy={status === "sending"}
         className="w-full rounded-full shadow-glow"
       >
         {status === "sending" ? "Sending..." : "Send it through"}
