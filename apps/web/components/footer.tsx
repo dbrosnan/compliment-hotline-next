@@ -1,5 +1,12 @@
+"use client";
+
+import { ShimmerButton } from "@workspace/ui/components/shimmer-button";
+
 export function Footer() {
   const year = new Date().getFullYear();
+  const scrollToSubmit = () => {
+    document.getElementById("submit")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   return (
     <footer
       className="border-t border-border/30 py-12 px-6 text-center text-sm text-muted-foreground"
@@ -24,6 +31,20 @@ export function Footer() {
         >
           An art piece, a cart, eight phones, and you.
         </p>
+
+        <div className="flex justify-center pt-2">
+          <ShimmerButton
+            onClick={scrollToSubmit}
+            shimmerColor="oklch(0.89 0.17 92)"
+            background="oklch(0.72 0.21 22)"
+            borderRadius="9999px"
+            shimmerDuration="2.4s"
+            className="text-sm font-semibold text-midnight"
+            aria-label="Jump to leave a compliment"
+          >
+            Leave one →
+          </ShimmerButton>
+        </div>
 
         <nav
           aria-label="Footer"

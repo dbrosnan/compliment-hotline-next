@@ -5,6 +5,7 @@ import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
 import { Textarea } from "@workspace/ui/components/textarea";
+import { ShimmerButton } from "@workspace/ui/components/shimmer-button";
 import { submitText } from "@/lib/api";
 
 const MAX = 500;
@@ -103,16 +104,19 @@ export function TextForm() {
         <p className="text-destructive text-sm" role="alert">{error}</p>
       )}
 
-      <Button
+      <ShimmerButton
         type="submit"
-        size="lg"
         disabled={status === "sending" || !message.trim()}
         aria-busy={status === "sending"}
-        className="w-full rounded-full shadow-glow"
+        shimmerColor="oklch(0.89 0.17 92)"
+        background="oklch(0.72 0.21 22)"
+        borderRadius="9999px"
+        shimmerDuration="2.4s"
+        className="w-full h-12 text-base font-semibold text-midnight disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ width: "100%" }}
       >
-        {status === "sending" ? "Sending..." : "Send it through"}
-      </Button>
+        {status === "sending" ? "Sending..." : "Send it through →"}
+      </ShimmerButton>
     </form>
   );
 }

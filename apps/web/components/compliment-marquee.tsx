@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@workspace/ui/components/card";
+import { Skeleton } from "@workspace/ui/components/skeleton";
+import { ShimmerButton } from "@workspace/ui/components/shimmer-button";
 import { fetchRecent, type ComplimentItem } from "@/lib/api";
 
 const SEED: ComplimentItem[] = [

@@ -252,15 +252,25 @@
   }
 }
 
-/* ─── Reduced motion fallback ──────────────────────────────────────────
- * Global safety net. Every CSS animation/transition above 10ms is
- * effectively disabled. Component-level Framer Motion also respects
- * prefers-reduced-motion via the useReducedMotion hook. */
+/* ─── Reduced motion — selective ──────────────────────────────────────
+ * Keep ambient psychedelic layer (liquid-light blobs, phone parade,
+ * sparkle field, disco balls, marquee) running under reduced-motion —
+ * they're the site's identity and never flash > 3 Hz.
+ * Kill attention-pulling motion: drops, fades, rings, pulses, bounces. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
+  .animate-ring,
+  .animate-pulse,
+  .animate-bounce,
+  .animate-\[ch-drop_700ms_cubic-bezier\(0\.34\,1\.56\,0\.64\,1\)_forwards\],
+  .animate-\[ch-fade_800ms_ease_forwards\],
+  .animate-\[ch-ring_4s_ease-in-out_infinite\] {
+    animation: none !important;
+  }
+  html { scroll-behavior: auto !important; }
+  .transition-transform,
+  .transition-all {
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
+
+/* (superseded by the selective reduced-motion block above) */

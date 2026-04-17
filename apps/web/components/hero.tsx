@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@workspace/ui/components/button";
 import { BorderBeam } from "@workspace/ui/components/border-beam";
+import { ShimmerButton } from "@workspace/ui/components/shimmer-button";
 import { DiscoBall } from "./disco-ball";
 import { SparkleField } from "./sparkle-field";
 import { PhoneParade } from "./phone-parade";
@@ -187,9 +188,16 @@ export function Hero() {
           <Button asChild variant="outline" size="sm" className="rounded-full">
             <a href="#how">How it works</a>
           </Button>
-          <Button asChild variant="outline" size="sm" className="rounded-full">
-            <a href="#submit">Skip to leaving one</a>
-          </Button>
+          <ShimmerButton
+            onClick={() => document.getElementById("submit")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+            shimmerColor="oklch(0.89 0.17 92)"
+            background="oklch(0.70 0.28 338)"
+            borderRadius="9999px"
+            shimmerDuration="2.4s"
+            className="h-8 text-xs font-semibold text-midnight px-4"
+          >
+            Skip to leaving one →
+          </ShimmerButton>
         </div>
       </div>
 

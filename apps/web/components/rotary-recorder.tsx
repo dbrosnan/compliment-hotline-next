@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
+import { ShimmerButton } from "@workspace/ui/components/shimmer-button";
 import { initAudio, finalizeAudio } from "@/lib/api";
 
 const MAX_DURATION_MS = 30_000;
@@ -202,9 +203,16 @@ export function RotaryRecorder() {
             <Button variant="outline" onClick={reset} className="flex-1 rounded-full">
               Redo
             </Button>
-            <Button onClick={upload} className="flex-1 rounded-full shadow-glow">
-              Send it through
-            </Button>
+            <ShimmerButton
+              onClick={upload}
+              shimmerColor="oklch(0.89 0.17 92)"
+              background="oklch(0.72 0.21 22)"
+              borderRadius="9999px"
+              shimmerDuration="2.4s"
+              className="flex-1 h-11 font-semibold text-base text-midnight"
+            >
+              Send it through →
+            </ShimmerButton>
           </div>
         </div>
       )}
