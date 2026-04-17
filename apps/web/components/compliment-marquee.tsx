@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useEffect, useState } from "react";
 import { Card } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
@@ -100,7 +101,7 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
   return (
     <>
       <div
-        className="overflow-hidden py-8"
+        className="overflow-visible py-16"
         style={{ maskImage: "linear-gradient(90deg, transparent, black 8%, black 92%, transparent)" }}
       >
         <div
@@ -126,11 +127,26 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
               phase(seed + 3, 13), // sway X
               phase(seed + 4, 17), // hue
             ].join(", ");
+            // Per-card random flight envelope. Y bob ranges 44-72px
+            // (so some cards fly much higher/lower than others);
+            // tilt 5-12deg; breathe 0.88-1.14; sway 8-22px.
+            const bobY = 44 + rand(seed + 10) * 28;
+            const tilt = 5 + rand(seed + 11) * 7;
+            const breatheMin = 0.9 - rand(seed + 12) * 0.04;
+            const breatheMax = 1.08 + rand(seed + 13) * 0.08;
+            const swayX = 8 + rand(seed + 14) * 14;
             return (
               <div
                 key={`${c.id}-${i}`}
                 className="ch-trippy shrink-0"
-                style={{ animationDelay: delay }}
+                style={{
+                  animationDelay: delay,
+                  ["--bob-y" as string]: `${bobY.toFixed(1)}px`,
+                  ["--tilt" as string]: `${tilt.toFixed(1)}deg`,
+                  ["--breathe-min" as string]: breatheMin.toFixed(3),
+                  ["--breathe-max" as string]: breatheMax.toFixed(3),
+                  ["--sway-x" as string]: `${swayX.toFixed(1)}px`,
+                } as CSSProperties}
               >
                 <Card
                   className="ch-glass inline-flex flex-col items-start gap-4 px-6 py-7 w-[280px] min-h-[180px] whitespace-normal border-0"
@@ -176,25 +192,29 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
           0% { transform: translateX(0); }
           100% { transform: translateX(-33.3333%); }
         }
-        /* 5 independent wobbles layered on each card. Using individual
-           transform properties (translate / rotate / scale) instead of
-           the monolithic \`transform\` so they compose rather than
-           overwrite each other. */
+        /* 5 independent wobbles layered on each card. Amplitudes are
+           per-card CSS variables (seeded from compliment id) so every
+           card has its own flight path — some fly higher, some tilt
+           harder, some breathe bigger. Uses individual transform
+           properties (translate / rotate / scale) instead of a
+           monolithic \`transform\` so they compose rather than overwrite
+           each other. Defaults are conservative; per-card style
+           overrides widen them. */
         @keyframes ch-bob-y {
-          0%, 100% { translate: 0 -22px; }
-          50%      { translate: 0 22px; }
+          0%, 100% { translate: 0 calc(var(--bob-y, 28px) * -1); }
+          50%      { translate: 0 var(--bob-y, 28px); }
         }
         @keyframes ch-tilt {
-          0%, 100% { rotate: -8deg; }
-          50%      { rotate: 8deg; }
+          0%, 100% { rotate: calc(var(--tilt, 8deg) * -1); }
+          50%      { rotate: var(--tilt, 8deg); }
         }
         @keyframes ch-breathe {
-          0%, 100% { scale: 0.94; }
-          50%      { scale: 1.08; }
+          0%, 100% { scale: var(--breathe-min, 0.94); }
+          50%      { scale: var(--breathe-max, 1.08); }
         }
         @keyframes ch-sway-x {
-          0%, 100% { transform: translateX(-10px); }
-          50%      { transform: translateX(10px); }
+          0%, 100% { transform: translateX(calc(var(--sway-x, 12px) * -1)); }
+          50%      { transform: translateX(var(--sway-x, 12px)); }
         }
         @keyframes ch-hue {
           0%, 100% { filter: hue-rotate(0deg) saturate(1); }
