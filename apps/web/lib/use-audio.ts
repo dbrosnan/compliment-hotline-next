@@ -122,17 +122,17 @@ export function useAudio(
       const code = audio.error?.code;
       // HTMLMediaElement.MediaError codes:
       //  1 ABORTED, 2 NETWORK, 3 DECODE, 4 SRC_NOT_SUPPORTED
-      const kind: AudioState["errorDetail"] = (() => {
-        if (code === 2) return { kind: "network", message: "Couldn't reach the recording." };
-        if (code === 4 || code === 3)
-          return {
-            kind: "format",
-            message:
-              "This recording's format isn't playable on your device. Usually iPhone + a WebM/Opus file. Try another compliment.",
-          };
-        return { kind: "other", message: audio.error?.message || "Playback failed." };
-      })();
-      console.warn("[useAudio] playback error", { code, src, kind });
+      const codeName =
+        code === 1 ? "ABORTED"
+        : code === 2 ? "NETWORK"
+        : code === 3 ? "DECODE"
+        : code === 4 ? "SRC_NOT_SUPPORTED"
+        : "UNKNOWN";
+      const kind: AudioState["errorDetail"] = {
+        kind: code === 2 ? "network" : code === 3 || code === 4 ? "format" : "other",
+        message: `MediaError ${code ?? "?"} (${codeName}) · ${audio.error?.message || "(no message)"} · src=${src}`,
+      };
+      console.warn("[useAudio] playback error", { code, codeName, src, rawError: audio.error });
       setErrorDetail(kind);
       setPhase("error");
     };
@@ -149,7 +149,7 @@ export function useAudio(
       console.warn("[useAudio] play() rejected", e);
       setErrorDetail({
         kind: "other",
-        message: e instanceof Error ? e.message : "Playback was blocked by the browser.",
+        message: `play() rejected · ${e?.name || "Error"}: ${e?.message || "(no message)"} · src=${src}`,
       });
       setPhase("error");
     });

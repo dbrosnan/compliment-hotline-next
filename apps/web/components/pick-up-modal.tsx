@@ -181,11 +181,11 @@ export function PickUpModal({
 
           {isError && (
             <div className="py-8 text-center space-y-4">
-              <p className="text-destructive font-mono text-sm">the line dropped.</p>
-              <p className="text-muted-foreground text-sm max-w-sm mx-auto">
-                {audio.errorDetail?.message ||
-                  "Playback failed. Try another, or record your own below."}
-              </p>
+              <p className="text-destructive font-mono text-sm">ERR · LINE DROPPED</p>
+              <pre className="text-muted-foreground text-[11px] font-mono max-w-lg mx-auto whitespace-pre-wrap break-all text-left bg-background/40 border border-border/30 rounded p-3">
+{audio.errorDetail?.message || "(no error detail)"}
+{"\n"}id={compliment.id}{"  "}name={compliment.name || "(anon)"}
+              </pre>
               <div className="flex gap-2 justify-center pt-1">
                 {onTryAnother && (
                   <button

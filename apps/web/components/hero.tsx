@@ -27,27 +27,38 @@ export function Hero() {
     fetchRecent()
       .then((data) => {
         // Only approved audio compliments enter the random-pick pool.
-        // Seeds / pending / rejected are excluded. Rows without
-        // has_audio are excluded because text-only compliments no
-        // longer exist.
         const approvedAudio = data.items.filter(
           (c) => c.status === "approved" && c.has_audio,
         );
-        // Pre-filter by what THIS browser can play. iOS Safari can't
-        // decode WebM/Opus, so serving a webm to an iPhone produces a
-        // "line dropped" error. canPlayType returns "" when no chance,
-        // "maybe" or "probably" when possible — keep those.
+        // Pre-filter by what THIS browser can actually decode. iOS
+        // Safari returns "" for WebM/Opus canPlayType — we drop those
+        // so iPhone only sees mp4 clips.
         const probe = typeof document !== "undefined" ? document.createElement("audio") : null;
+        const debug: Array<{ id: number; mime: string | null | undefined; full: string; bare: string; kept: boolean }> = [];
         const playable = approvedAudio.filter((c) => {
-          if (!c.mime_type || !probe) return true; // unknown MIME → attempt anyway
-          // Strip codec params for the canPlayType check when the
-          // full string returns "" — e.g. some Safari versions accept
-          // "audio/mp4" but not "audio/mp4;codecs=mp4a.40.2".
-          return !!probe.canPlayType(c.mime_type) || !!probe.canPlayType(c.mime_type.split(";")[0]!);
+          if (!probe) return true;
+          const mime = c.mime_type;
+          if (!mime) {
+            debug.push({ id: c.id, mime, full: "(no mime)", bare: "(no mime)", kept: true });
+            return true;
+          }
+          const bare = mime.split(";")[0]!.trim();
+          const full = probe.canPlayType(mime);
+          const bareResult = probe.canPlayType(bare);
+          const kept = !!full || !!bareResult;
+          debug.push({ id: c.id, mime, full: full || "(empty)", bare: bareResult || "(empty)", kept });
+          return kept;
         });
-        setPool(playable.length ? playable : approvedAudio);
+        console.log("[hero] playable filter", {
+          total: approvedAudio.length,
+          kept: playable.length,
+          ua: typeof navigator !== "undefined" ? navigator.userAgent : "(no nav)",
+          rows: debug,
+        });
+        setPool(playable);
       })
-      .catch(() => {
+      .catch((e) => {
+        console.warn("[hero] fetchRecent failed", e);
         setPool([]);
       });
   }, []);
