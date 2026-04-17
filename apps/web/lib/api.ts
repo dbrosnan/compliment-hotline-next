@@ -5,6 +5,8 @@ export type ComplimentItem = {
   has_audio: boolean;
   duration_ms: number | null;
   created_at: number;
+  /** Only present on /recent responses. Omitted by older clients / fallback data. */
+  status?: "approved" | "seed";
 };
 
 export type RecentResponse = {

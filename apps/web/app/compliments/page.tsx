@@ -19,11 +19,21 @@ type Row = {
   created_at: number;
 };
 
-const STATUS_COLORS: Record<Row["status"], string> = {
-  pending: "text-citrus",
-  approved: "text-mint",
-  rejected: "text-destructive",
-  seed: "text-cyan",
+/** Row-level background tint + left border. 'approved' gets a visible
+ *  green treatment; 'rejected' dims. */
+const STATUS_ROW_BG: Record<Row["status"], string> = {
+  pending: "",
+  approved: "bg-mint/10 hover:bg-mint/15 border-l-4 border-l-mint",
+  rejected: "opacity-60",
+  seed: "",
+};
+
+/** Status pill in the ID column. Approved is unmistakably green. */
+const STATUS_PILL: Record<Row["status"], string> = {
+  pending: "bg-citrus/15 text-citrus border border-citrus/30",
+  approved: "bg-mint/20 text-mint border border-mint/40",
+  rejected: "bg-destructive/15 text-destructive border border-destructive/30",
+  seed: "bg-cyan/15 text-cyan border border-cyan/30",
 };
 
 /**
@@ -341,7 +351,10 @@ export default function ComplimentsAdminPage() {
                 </tr>
               )}
               {filtered?.map((r) => (
-                <tr key={r.id} className="border-t border-border/20 hover:bg-background/30 transition-colors">
+                <tr
+                  key={r.id}
+                  className={`border-t border-border/20 transition-colors ${STATUS_ROW_BG[r.status] || "hover:bg-background/30"}`}
+                >
                   <td className="p-3">
                     <input
                       type="checkbox"
@@ -352,8 +365,14 @@ export default function ComplimentsAdminPage() {
                     />
                   </td>
                   <td className="p-3 font-mono text-xs text-muted-foreground">#{r.id}</td>
-                  <td className={`p-3 font-mono text-xs uppercase tracking-wide ${STATUS_COLORS[r.status]}`}>
-                    {r.status}
+                  <td className="p-3">
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide ${STATUS_PILL[r.status]}`}
+                    >
+                      {r.status === "approved" && <span aria-hidden>✓</span>}
+                      {r.status === "rejected" && <span aria-hidden>✕</span>}
+                      {r.status}
+                    </span>
                   </td>
                   <td className="p-3 font-mono text-xs text-muted-foreground whitespace-nowrap">
                     {new Date(r.created_at * 1000).toLocaleString([], {

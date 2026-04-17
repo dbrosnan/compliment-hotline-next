@@ -11,6 +11,7 @@ type Row = {
   audio_key: string | null;
   duration_ms: number | null;
   created_at: number;
+  status: "approved" | "seed";
 };
 
 const encodeCursor = (ts: number, id: number) => btoa(`${ts}_${id}`).replace(/=+$/, "");
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
         const c = decodeCursor(cursor);
         if (!c) return null;
         return env.DB.prepare(
-          `SELECT id, name, message, audio_key, duration_ms, created_at
+          `SELECT id, name, message, audio_key, duration_ms, created_at, status
            FROM compliments
            WHERE status IN ('approved','seed')
              AND (created_at < ? OR (created_at = ? AND id < ?))
@@ -50,7 +51,7 @@ export async function GET(request: NextRequest) {
         ).bind(c.ts, c.ts, c.id, limit);
       })()
     : env.DB.prepare(
-        `SELECT id, name, message, audio_key, duration_ms, created_at
+        `SELECT id, name, message, audio_key, duration_ms, created_at, status
          FROM compliments
          WHERE status IN ('approved','seed')
          ORDER BY created_at DESC, id DESC
@@ -68,6 +69,7 @@ export async function GET(request: NextRequest) {
     has_audio: !!r.audio_key,
     duration_ms: r.duration_ms,
     created_at: r.created_at,
+    status: r.status,
   }));
   const last = rows[rows.length - 1];
   const next_cursor = rows.length === limit && last ? encodeCursor(last.created_at, last.id) : null;

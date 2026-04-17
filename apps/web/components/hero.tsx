@@ -33,8 +33,14 @@ export function Hero() {
     setMounted(true);
     fetchRecent()
       .then((data) => {
-        const withMsg = data.items.filter((c) => c.message);
-        if (withMsg.length > 0) setPool(withMsg);
+        // Hero's random pool is ONLY human-approved compliments. Seeds
+        // (starter content baked into the DB) are excluded so every voiced
+        // compliment is a real stranger's. If no approved items exist yet,
+        // fall back to the hardcoded pool so the CTA still works.
+        const approved = data.items.filter(
+          (c) => c.message && c.status === "approved",
+        );
+        if (approved.length > 0) setPool(approved);
       })
       .catch(() => {});
   }, []);
