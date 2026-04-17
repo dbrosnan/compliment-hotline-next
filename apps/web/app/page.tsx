@@ -5,8 +5,6 @@ import { HowItWorks } from "@/components/how-it-works";
 import { SubmitSection } from "@/components/submit-section";
 import { Footer } from "@/components/footer";
 import { PsychedelicWaveform } from "@/components/psychedelic-waveform";
-import { VerticalVideo } from "@/components/vertical-video";
-import { SectionHeading } from "@/components/section-heading";
 
 export default function Page() {
   return (
@@ -42,26 +40,6 @@ export default function Page() {
       </section>
       <CoiledCord />
       <HowItWorks />
-
-      {/* iPhone-aspect tour video. Drop the encoded file at
-          apps/web/public/cart-tour.mp4 (+ cart-tour-poster.jpg).
-          See vertical-video.tsx for encoding guidance. */}
-      <section className="relative px-6 py-16 md:py-20">
-        <div className="mx-auto w-full max-w-6xl">
-          <SectionHeading
-            eyebrow="Sneak peek"
-            title="SEE IT LIVE"
-            tagline="A taste of the cart out in the wild."
-            className="mb-10"
-          />
-          <VerticalVideo
-            src="/cart-tour.mp4"
-            poster="/cart-tour-poster.jpg"
-            label="Compliment Hotline cart at a festival"
-          />
-        </div>
-      </section>
-
       <CoiledCord flipped />
       <SubmitSection />
       <Footer />
