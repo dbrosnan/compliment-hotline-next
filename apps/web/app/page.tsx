@@ -11,16 +11,16 @@ export default function Page() {
   return (
     <main className="relative overflow-x-hidden">
       <Hero />
-      {/* Full-width psychedelic oscilloscope band — sits directly below
-          the hero video for a seamless "the waveform breaks out of the
-          frame" moment. */}
-      <section
-        aria-hidden
-        className="relative w-full h-[40vh] min-h-[280px] max-h-[520px] overflow-hidden bg-background"
-      >
-        <PsychedelicWaveform />
+      {/* Full-width psychedelic oscilloscope band with the LIVE marquee
+          floating glass-style above its centerline. */}
+      <section className="relative w-full min-h-[420px] md:min-h-[520px] overflow-hidden bg-background">
+        <div className="absolute inset-0" aria-hidden>
+          <PsychedelicWaveform />
+        </div>
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-10">
+          <ComplimentMarquee />
+        </div>
       </section>
-      <ComplimentMarquee />
       <CoiledCord />
       <HowItWorks />
       <CoiledCord flipped />

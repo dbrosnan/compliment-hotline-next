@@ -38,16 +38,41 @@ export function ComplimentMarquee() {
 
   return (
     <section
-      className="relative border-y border-border/30 bg-card/30 py-14 overflow-hidden"
+      className="relative py-14 overflow-hidden"
       aria-label="Live compliments"
     >
-      <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground text-center mb-8">
+      <p
+        className="font-mono text-xs uppercase tracking-[0.3em] text-center mb-8"
+        style={{
+          color: "oklch(0.93 0.04 82 / 0.85)",
+          textShadow:
+            "0 0 12px oklch(0.45 0.27 291 / 0.9), 0 0 24px oklch(0.45 0.27 291 / 0.6)",
+        }}
+      >
         LIVE from the hotline
       </p>
 
       {items === null && <MarqueeSkeleton />}
       {items !== null && items.length === 0 && <MarqueeEmpty />}
       {items !== null && items.length > 0 && <MarqueeTrack items={items} />}
+
+      <style>{`
+        /* Frosted-glass card sitting over the psychedelic waveform.
+           Backdrop blur + saturation boost = classic glassmorphism.
+           The inset top highlight + outer brand-hued shadow give it
+           bezel + depth so it reads as a physical object. */
+        .ch-glass {
+          background: oklch(0.17 0.08 290 / 0.28);
+          backdrop-filter: blur(18px) saturate(1.45);
+          -webkit-backdrop-filter: blur(18px) saturate(1.45);
+          border-radius: 14px;
+          box-shadow:
+            inset 0 1px 0 oklch(0.93 0.04 82 / 0.22),
+            inset 0 0 0 1px oklch(0.93 0.04 82 / 0.10),
+            0 10px 32px oklch(0.45 0.27 291 / 0.35),
+            0 2px 6px oklch(0 0 0 / 0.25);
+        }
+      `}</style>
     </section>
   );
 }
@@ -101,26 +126,35 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
                 style={{ animationDelay: delay }}
               >
                 <Card
-                  className="inline-flex flex-col items-start gap-2 px-5 py-4 bg-card/70 border-border/30 w-[280px] whitespace-normal backdrop-blur-sm"
+                  className="ch-glass inline-flex flex-col items-start gap-2 px-5 py-4 w-[280px] whitespace-normal border-0"
                   aria-label={ariaLabel}
                 >
-                  <div className="flex items-center gap-3 w-full">
+                  <div className="flex items-center gap-3 w-full relative z-10">
                     <PsychedelicIcon id={c.id} size={36} />
-                    <span className="font-display text-lg text-foreground tracking-wide truncate flex-1">
+                    <span
+                      className="font-display text-lg tracking-wide truncate flex-1"
+                      style={{ color: "oklch(0.97 0.02 82)" }}
+                    >
                       {speaker}
                     </span>
                     {secs !== null && (
-                      <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground shrink-0">
+                      <span
+                        className="font-mono text-[10px] uppercase tracking-[0.15em] shrink-0"
+                        style={{ color: "oklch(0.89 0.17 92 / 0.85)" }}
+                      >
                         {secs}s
                       </span>
                     )}
                   </div>
                   {quote ? (
-                    <p className="font-serif italic text-sm text-muted-foreground leading-snug line-clamp-2">
+                    <p
+                      className="font-serif italic text-sm leading-snug line-clamp-2 relative z-10"
+                      style={{ color: "oklch(0.93 0.04 82 / 0.88)" }}
+                    >
                       “{quote}”
                     </p>
                   ) : (
-                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50 relative z-10">
                       pick up to hear
                     </p>
                   )}
@@ -192,7 +226,7 @@ function MarqueeSkeleton() {
         {Array.from({ length: 6 }).map((_, i) => (
           <Card
             key={i}
-            className="shrink-0 inline-flex flex-col items-start gap-2 px-5 py-4 bg-card/40 border-border/30 w-[280px]"
+            className="ch-glass shrink-0 inline-flex flex-col items-start gap-2 px-5 py-4 w-[280px] border-0"
           >
             <div className="flex items-center gap-3 w-full">
               <Skeleton className="h-9 w-9 rounded-full" />
