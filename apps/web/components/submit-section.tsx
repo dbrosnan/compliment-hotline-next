@@ -19,15 +19,27 @@ export function SubmitSection() {
 
         <Card className="w-full bg-card/70 border-border/25 backdrop-blur-sm shadow-md" style={{ width: "100%" }}>
           <CardContent className="w-full p-6 md:p-10" style={{ width: "100%" }}>
-            <Tabs defaultValue="text" className="w-full" style={{ width: "100%" }}>
+            <Tabs
+              defaultValue="text"
+              className="w-full"
+              style={{ display: "block", width: "100%" }}
+            >
               <TabsList className="mx-auto mb-8 w-fit">
                 <TabsTrigger value="text">✍️ Text</TabsTrigger>
                 <TabsTrigger value="audio">🎙 Audio</TabsTrigger>
               </TabsList>
-              <TabsContent value="text" className="w-full" style={{ width: "100%" }}>
+              <TabsContent
+                value="text"
+                className="w-full"
+                style={{ display: "block", width: "100%", minWidth: 0 }}
+              >
                 <TextForm />
               </TabsContent>
-              <TabsContent value="audio" className="w-full" style={{ width: "100%" }}>
+              <TabsContent
+                value="audio"
+                className="w-full"
+                style={{ display: "block", width: "100%", minWidth: 0 }}
+              >
                 <RotaryRecorder />
               </TabsContent>
             </Tabs>
