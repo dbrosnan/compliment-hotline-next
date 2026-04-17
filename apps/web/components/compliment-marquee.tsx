@@ -59,18 +59,19 @@ export function ComplimentMarquee() {
       <style>{`
         /* Frosted-glass card sitting over the psychedelic waveform.
            Backdrop blur + saturation boost = classic glassmorphism.
-           The inset top highlight + outer brand-hued shadow give it
-           bezel + depth so it reads as a physical object. */
+           Higher opacity (0.48) so cards read clearly above the
+           bright oscilloscope waveform. Top bezel highlight +
+           thicker outer brand-hued shadow = lifted/floating feel. */
         .ch-glass {
-          background: oklch(0.17 0.08 290 / 0.28);
-          backdrop-filter: blur(18px) saturate(1.45);
-          -webkit-backdrop-filter: blur(18px) saturate(1.45);
+          background: oklch(0.17 0.08 290 / 0.48);
+          backdrop-filter: blur(22px) saturate(1.55);
+          -webkit-backdrop-filter: blur(22px) saturate(1.55);
           border-radius: 14px;
           box-shadow:
-            inset 0 1px 0 oklch(0.93 0.04 82 / 0.22),
-            inset 0 0 0 1px oklch(0.93 0.04 82 / 0.10),
-            0 10px 32px oklch(0.45 0.27 291 / 0.35),
-            0 2px 6px oklch(0 0 0 / 0.25);
+            inset 0 1px 0 oklch(0.93 0.04 82 / 0.28),
+            inset 0 0 0 1px oklch(0.93 0.04 82 / 0.14),
+            0 14px 42px oklch(0.45 0.27 291 / 0.5),
+            0 4px 10px oklch(0 0 0 / 0.35);
         }
       `}</style>
     </section>
