@@ -17,6 +17,18 @@ export type AudioState = {
   /** Detail attached when phase === "error" so the modal can show a
    *  useful message (e.g. codec not supported on this device). */
   errorDetail?: { kind: "format" | "network" | "other"; message: string };
+  /** Live snapshot of the underlying HTMLAudioElement so we can show
+   *  volume/muted/readyState/currentTime on screen for debugging
+   *  silent-playback issues (iOS ring switch, AudioContext, etc.) */
+  debug?: {
+    paused: boolean;
+    muted: boolean;
+    volume: number;
+    currentTime: number;
+    duration: number;
+    readyState: number;
+    networkState: number;
+  };
   /** Unused for audio; kept for TravelingWaveform prop-shape compatibility. */
   wordIndex: number;
   currentCharStart: number;
@@ -54,6 +66,7 @@ export function useAudio(
   const [elapsed, setElapsed] = useState(0);
   const [pulses, setPulses] = useState<AudioPulse[]>([]);
   const [errorDetail, setErrorDetail] = useState<AudioState["errorDetail"]>();
+  const [debug, setDebug] = useState<AudioState["debug"]>();
 
   const startedAt = useRef(0);
   const pulseId = useRef(0);
@@ -70,6 +83,7 @@ export function useAudio(
         /* noop */
       }
       audioRef.current.src = "";
+      if (audioRef.current.parentNode) audioRef.current.parentNode.removeChild(audioRef.current);
       audioRef.current = null;
     }
     if (pulseTimer.current) clearInterval(pulseTimer.current);
@@ -86,13 +100,34 @@ export function useAudio(
     setElapsed(0);
     startedAt.current = 0;
 
-    const audio = new Audio(src);
+    // Create AND attach to DOM — iOS sometimes refuses to output sound
+    // for detached Audio elements. Hidden but in the document.body.
+    const audio = document.createElement("audio");
+    audio.src = src;
     audio.preload = "auto";
+    audio.crossOrigin = "anonymous";
+    audio.muted = false;
+    audio.volume = 1.0;
+    audio.controls = false;
+    // playsInline is only meaningful for video but harmless on audio
+    (audio as HTMLMediaElement & { playsInline?: boolean }).playsInline = true;
+    audio.style.cssText =
+      "position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;";
+    document.body.appendChild(audio);
     audioRef.current = audio;
+
+    console.log("[useAudio] created & attached", { src, muted: audio.muted, volume: audio.volume });
 
     audio.onplay = () => {
       startedAt.current = performance.now();
       setPhase("speaking");
+      console.log("[useAudio] onplay", {
+        muted: audio.muted,
+        volume: audio.volume,
+        duration: audio.duration,
+        readyState: audio.readyState,
+        currentSrc: audio.currentSrc,
+      });
       // Fire a pulse every ~150ms for the TravelingWaveform
       if (pulseTimer.current) clearInterval(pulseTimer.current);
       pulseTimer.current = setInterval(() => {
@@ -156,9 +191,25 @@ export function useAudio(
   }, [src, cancel]);
 
   useEffect(() => {
+    let lastSnap = 0;
     const tick = () => {
       if (startedAt.current && (phase === "speaking" || phase === "paused")) {
         setElapsed(performance.now() - startedAt.current);
+      }
+      // Snap audio element state ~5Hz for the on-screen debug box
+      const now = performance.now();
+      const a = audioRef.current;
+      if (a && now - lastSnap > 200) {
+        lastSnap = now;
+        setDebug({
+          paused: a.paused,
+          muted: a.muted,
+          volume: a.volume,
+          currentTime: a.currentTime,
+          duration: isFinite(a.duration) ? a.duration : 0,
+          readyState: a.readyState,
+          networkState: a.networkState,
+        });
       }
       rafId.current = requestAnimationFrame(tick);
     };
@@ -185,6 +236,7 @@ export function useAudio(
     elapsed,
     pulses,
     errorDetail,
+    debug,
     wordIndex: -1,
     currentCharStart: 0,
     currentCharEnd: 0,

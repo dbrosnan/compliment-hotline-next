@@ -133,6 +133,18 @@ export function PickUpModal({
 
           {hasStarted && !isError && (
             <div className="py-6 flex flex-col items-center gap-8">
+              {/* On-screen audio state so we can diagnose silent playback
+                  on iOS without Web Inspector. Shows paused/muted/volume,
+                  currentTime, duration, readyState, networkState. */}
+              {audio.debug && (
+                <pre className="text-muted-foreground/70 text-[10px] font-mono whitespace-pre-wrap break-all text-left bg-background/30 border border-border/20 rounded px-3 py-2 max-w-lg mx-auto">
+                  {`paused=${audio.debug.paused} muted=${audio.debug.muted} vol=${audio.debug.volume.toFixed(2)}`}
+                  {"\n"}
+                  {`t=${audio.debug.currentTime.toFixed(2)} / ${audio.debug.duration.toFixed(2)}`}
+                  {"\n"}
+                  {`readyState=${audio.debug.readyState} networkState=${audio.debug.networkState}`}
+                </pre>
+              )}
               <blockquote
                 className="font-display text-3xl md:text-5xl leading-none tracking-wide text-foreground"
                 style={{ width: "100%" }}
