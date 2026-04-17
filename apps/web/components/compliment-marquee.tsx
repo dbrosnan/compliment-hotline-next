@@ -58,20 +58,26 @@ export function ComplimentMarquee() {
 
       <style>{`
         /* Frosted-glass card sitting over the psychedelic waveform.
-           Backdrop blur + saturation boost = classic glassmorphism.
-           Higher opacity (0.48) so cards read clearly above the
-           bright oscilloscope waveform. Top bezel highlight +
-           thicker outer brand-hued shadow = lifted/floating feel. */
+           Now substantially more opaque + heavier shadow stack so
+           the cards read unmistakably as physical objects floating
+           above the waveform surface rather than blending in. */
         .ch-glass {
-          background: oklch(0.17 0.08 290 / 0.48);
-          backdrop-filter: blur(22px) saturate(1.55);
-          -webkit-backdrop-filter: blur(22px) saturate(1.55);
+          background: oklch(0.15 0.07 290 / 0.78);
+          backdrop-filter: blur(28px) saturate(1.7);
+          -webkit-backdrop-filter: blur(28px) saturate(1.7);
           border-radius: 14px;
           box-shadow:
-            inset 0 1px 0 oklch(0.93 0.04 82 / 0.28),
-            inset 0 0 0 1px oklch(0.93 0.04 82 / 0.14),
-            0 14px 42px oklch(0.45 0.27 291 / 0.5),
-            0 4px 10px oklch(0 0 0 / 0.35);
+            /* bezel + hairline: sells the "pane of glass" edge */
+            inset 0 1px 0 oklch(0.93 0.04 82 / 0.38),
+            inset 0 -1px 0 oklch(0 0 0 / 0.35),
+            inset 0 0 0 1px oklch(0.93 0.04 82 / 0.18),
+            /* close shadow: grounds the card on a surface */
+            0 2px 4px oklch(0 0 0 / 0.45),
+            0 6px 14px oklch(0 0 0 / 0.4),
+            /* lift shadow: creates the "floating" separation */
+            0 22px 48px oklch(0 0 0 / 0.5),
+            /* brand halo: purple glow for atmosphere */
+            0 24px 70px oklch(0.45 0.27 291 / 0.6);
         }
       `}</style>
     </section>
