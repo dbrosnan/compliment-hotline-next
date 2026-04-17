@@ -261,9 +261,36 @@ export default function ComplimentsAdminPage() {
               {items ? `${items.length} compliment${items.length === 1 ? "" : "s"} in database` : "loading…"}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button variant="outline" size="sm" onClick={load} disabled={busy}>
               Refresh
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  const res = await fetch("/api/admin/transcribe-all", {
+                    method: "POST",
+                    credentials: "include",
+                  });
+                  const d = await res.json();
+                  if (d.ok) {
+                    setToast(
+                      `transcribed ${d.data.succeeded}/${d.data.processed}${d.data.failed ? ` (${d.data.failed} failed)` : ""}`,
+                    );
+                    await load();
+                  } else {
+                    setToast(d.error || "batch transcribe failed");
+                  }
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              🎙 Transcribe missing
             </Button>
             <Button variant="outline" size="sm" onClick={downloadCsv} disabled={!items?.length}>
               Download CSV
