@@ -10,30 +10,27 @@ import { Skeleton } from "@workspace/ui/components/skeleton";
 type Row = {
   id: number;
   name: string | null;
-  message: string | null;
   audio_key: string | null;
   mime_type: string | null;
   duration_ms: number | null;
-  status: "pending" | "approved" | "rejected" | "seed";
+  status: "pending" | "approved" | "rejected";
   reject_reason: string | null;
   created_at: number;
 };
 
-/** Row-level background tint + left border. 'approved' gets a visible
- *  green treatment; 'rejected' dims. */
+/** Row-level background tint + left border. Approved is visibly green;
+ *  rejected dims. */
 const STATUS_ROW_BG: Record<Row["status"], string> = {
   pending: "",
   approved: "bg-mint/10 hover:bg-mint/15 border-l-4 border-l-mint",
   rejected: "opacity-60",
-  seed: "",
 };
 
-/** Status pill in the ID column. Approved is unmistakably green. */
+/** Status pill — approved is unmistakably green. */
 const STATUS_PILL: Record<Row["status"], string> = {
   pending: "bg-citrus/15 text-citrus border border-citrus/30",
   approved: "bg-mint/20 text-mint border border-mint/40",
   rejected: "bg-destructive/15 text-destructive border border-destructive/30",
-  seed: "bg-cyan/15 text-cyan border border-cyan/30",
 };
 
 /**
@@ -102,7 +99,7 @@ export default function ComplimentsAdminPage() {
   }, [items, filter]);
 
   const counts = useMemo(() => {
-    const base = { all: 0, pending: 0, approved: 0, rejected: 0, seed: 0 };
+    const base = { all: 0, pending: 0, approved: 0, rejected: 0 };
     if (!items) return base;
     for (const r of items) {
       base.all += 1;
@@ -178,14 +175,14 @@ export default function ComplimentsAdminPage() {
   const downloadCsv = () => {
     if (!items) return;
     const rows = selected.size ? items.filter((r) => selected.has(r.id)) : items;
-    const header = ["id", "created_at", "status", "name", "message", "audio_key", "mime_type", "duration_ms", "reject_reason"];
+    const header = ["id", "created_at", "status", "name", "audio_key", "mime_type", "duration_ms", "reject_reason"];
     const esc = (v: unknown) => {
       const s = v == null ? "" : String(v);
       return /[",\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
     };
     const lines = [header.join(",")];
     for (const r of rows) {
-      lines.push([r.id, new Date(r.created_at * 1000).toISOString(), r.status, r.name, r.message, r.audio_key, r.mime_type, r.duration_ms, r.reject_reason].map(esc).join(","));
+      lines.push([r.id, new Date(r.created_at * 1000).toISOString(), r.status, r.name, r.audio_key, r.mime_type, r.duration_ms, r.reject_reason].map(esc).join(","));
     }
     const blob = new Blob([lines.join("\n")], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -278,7 +275,7 @@ export default function ComplimentsAdminPage() {
 
         {/* Filters */}
         <div className="flex flex-wrap gap-2">
-          {(["all", "pending", "approved", "seed", "rejected"] as const).map((s) => (
+          {(["all", "pending", "approved", "rejected"] as const).map((s) => (
             <Button
               key={s}
               size="sm"
@@ -330,7 +327,7 @@ export default function ComplimentsAdminPage() {
                 <th className="p-3 w-28 font-mono text-xs uppercase tracking-widest text-muted-foreground">Status</th>
                 <th className="p-3 w-32 font-mono text-xs uppercase tracking-widest text-muted-foreground">When</th>
                 <th className="p-3 w-32 font-mono text-xs uppercase tracking-widest text-muted-foreground">Name</th>
-                <th className="p-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">Content</th>
+                <th className="p-3 font-mono text-xs uppercase tracking-widest text-muted-foreground">Audio</th>
                 <th className="p-3 w-64 font-mono text-xs uppercase tracking-widest text-muted-foreground text-right">Actions</th>
               </tr>
             </thead>
@@ -383,17 +380,18 @@ export default function ComplimentsAdminPage() {
                     })}
                   </td>
                   <td className="p-3 text-foreground/90 truncate max-w-[8rem]">{r.name || <span className="italic text-muted-foreground/60">anonymous</span>}</td>
-                  <td className="p-3 font-serif italic text-foreground/90">
-                    {r.message && <div className="mb-2">&ldquo;{r.message}&rdquo;</div>}
-                    {r.audio_key && (
+                  <td className="p-3">
+                    {r.audio_key ? (
                       <audio
                         controls
                         src={`/api/admin/audio/${r.id}`}
                         className="h-8 w-full max-w-sm"
                       />
+                    ) : (
+                      <span className="text-xs italic text-muted-foreground/60">(no audio)</span>
                     )}
                     {r.reject_reason && (
-                      <div className="text-destructive text-xs mt-1 not-italic">
+                      <div className="text-destructive text-xs mt-1">
                         ✕ {r.reject_reason}
                       </div>
                     )}

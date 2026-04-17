@@ -4,7 +4,7 @@ import { err, ok } from "@/lib/server/response";
 import { isAdmin } from "@/lib/server/admin";
 
 /**
- * Admin: list EVERY compliment (pending, approved, rejected, seed).
+ * Admin: list EVERY compliment (pending, approved, rejected).
  * Used by /compliments moderation page.
  */
 export async function GET(request: NextRequest) {
@@ -16,14 +16,14 @@ export async function GET(request: NextRequest) {
 
   const stmt = status
     ? env.DB.prepare(
-        `SELECT id, name, message, audio_key, mime_type, duration_ms, status, reject_reason, created_at
+        `SELECT id, name, audio_key, mime_type, duration_ms, status, reject_reason, created_at
          FROM compliments
          WHERE status = ?
          ORDER BY created_at DESC, id DESC
          LIMIT 500`,
       ).bind(status)
     : env.DB.prepare(
-        `SELECT id, name, message, audio_key, mime_type, duration_ms, status, reject_reason, created_at
+        `SELECT id, name, audio_key, mime_type, duration_ms, status, reject_reason, created_at
          FROM compliments
          ORDER BY created_at DESC, id DESC
          LIMIT 500`,

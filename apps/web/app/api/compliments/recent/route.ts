@@ -7,11 +7,10 @@ import { err, ok } from "@/lib/server/response";
 type Row = {
   id: number;
   name: string | null;
-  message: string | null;
   audio_key: string | null;
   duration_ms: number | null;
   created_at: number;
-  status: "approved" | "seed";
+  status: "approved";
 };
 
 const encodeCursor = (ts: number, id: number) => btoa(`${ts}_${id}`).replace(/=+$/, "");
@@ -42,18 +41,20 @@ export async function GET(request: NextRequest) {
         const c = decodeCursor(cursor);
         if (!c) return null;
         return env.DB.prepare(
-          `SELECT id, name, message, audio_key, duration_ms, created_at, status
+          `SELECT id, name, audio_key, duration_ms, created_at, status
            FROM compliments
-           WHERE status IN ('approved','seed')
+           WHERE status = 'approved'
+             AND audio_key IS NOT NULL
              AND (created_at < ? OR (created_at = ? AND id < ?))
            ORDER BY created_at DESC, id DESC
            LIMIT ?`,
         ).bind(c.ts, c.ts, c.id, limit);
       })()
     : env.DB.prepare(
-        `SELECT id, name, message, audio_key, duration_ms, created_at, status
+        `SELECT id, name, audio_key, duration_ms, created_at, status
          FROM compliments
-         WHERE status IN ('approved','seed')
+         WHERE status = 'approved'
+           AND audio_key IS NOT NULL
          ORDER BY created_at DESC, id DESC
          LIMIT ?`,
       ).bind(limit);
@@ -65,7 +66,6 @@ export async function GET(request: NextRequest) {
   const items = rows.map((r) => ({
     id: r.id,
     name: r.name,
-    message: r.message,
     has_audio: !!r.audio_key,
     duration_ms: r.duration_ms,
     created_at: r.created_at,

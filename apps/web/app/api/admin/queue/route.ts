@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   if (!(await isAdmin(env, request))) return err("unauthorized", 401);
 
   const res = await env.DB.prepare(
-    `SELECT id, name, message, audio_key, mime_type, duration_ms, status, created_at
+    `SELECT id, name, audio_key, mime_type, duration_ms, status, created_at
      FROM compliments
      WHERE status = 'pending'
      ORDER BY created_at ASC

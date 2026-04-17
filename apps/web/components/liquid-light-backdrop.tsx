@@ -1,9 +1,9 @@
 "use client";
 
-import type { SpeechPhase } from "@/lib/use-speech";
+import type { AudioPhase } from "@/lib/use-audio";
 
 type Props = {
-  phase: SpeechPhase;
+  phase: AudioPhase;
   pulseKey: number;
 };
 

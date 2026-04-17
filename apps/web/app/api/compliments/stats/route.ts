@@ -5,7 +5,7 @@ import { ok } from "@/lib/server/response";
 export async function GET() {
   const env = await cfEnv();
   const res = await env.DB.prepare(
-    `SELECT COUNT(*) AS n FROM compliments WHERE status IN ('approved','seed')`,
+    `SELECT COUNT(*) AS n FROM compliments WHERE status = 'approved' AND audio_key IS NOT NULL`,
   ).first<{ n: number }>();
   return ok({ total: res?.n ?? 0 }, { headers: { "Cache-Control": "public, max-age=60" } });
 }

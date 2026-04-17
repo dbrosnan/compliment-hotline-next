@@ -9,9 +9,9 @@ import {
   DialogDescription,
 } from "@workspace/ui/components/dialog";
 import type { ComplimentItem } from "@/lib/api";
-import { useSpeech } from "@/lib/use-speech";
+import { audioUrl } from "@/lib/api";
+import { useAudio } from "@/lib/use-audio";
 import { LiquidLightBackdrop } from "./liquid-light-backdrop";
-import { ComplimentText } from "./compliment-text";
 import { TravelingWaveform } from "./traveling-waveform";
 import { BorderBeam } from "@workspace/ui/components/border-beam";
 
@@ -22,39 +22,49 @@ type Props = {
   onFinished: () => void;
 };
 
+/**
+ * Compliment playback modal — audio-only.
+ *
+ * When open with an approved audio compliment:
+ *   1. "Ringing" phase ~400ms (visual theater)
+ *   2. HTMLAudioElement streams from /api/compliments/:id/audio
+ *   3. Speaking phase with TravelingWaveform reacting to pulses
+ *   4. "Delivered" phase, then idle -> parent scrolls to submit
+ */
 export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Props) {
-  const text = compliment?.message ?? null;
-  const speech = useSpeech(text, { active: open && !!text, rate: 0.95 });
+  const src = compliment ? audioUrl(compliment.id) : null;
+  const audio = useAudio(src, { active: open && !!src });
 
-  // We want to fire onFinished ONLY after the full delivered -> idle
-  // transition, not on the initial render where phase starts as "idle".
-  // Track the previous phase so we only fire on an actual transition.
-  const prevPhase = useRef<typeof speech.phase>("idle");
+  // Only fire onFinished after a real delivered -> idle transition.
+  const prevPhase = useRef<typeof audio.phase>("idle");
   useEffect(() => {
     const was = prevPhase.current;
-    const now = speech.phase;
+    const now = audio.phase;
     if (open && was === "delivered" && now === "idle") {
       onFinished();
     }
     prevPhase.current = now;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speech.phase, open]);
+  }, [audio.phase, open]);
 
   if (!compliment) return null;
 
-  const phase = speech.phase;
+  const phase = audio.phase;
   const isRinging = phase === "ringing" || phase === "idle";
   const hasStarted = phase === "speaking" || phase === "paused" || phase === "delivered";
   const hasEnded = phase === "delivered";
+  const isError = phase === "error";
 
   const phaseLabel =
     phase === "ringing" || phase === "idle"
       ? "📞 incoming..."
       : phase === "speaking" || phase === "paused"
-        ? "🎙 from a stranger"
+        ? "🎙 a stranger's voice"
         : phase === "delivered"
           ? "💌 delivered"
-          : "";
+          : phase === "error"
+            ? "✕ line dropped"
+            : "";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -62,11 +72,9 @@ export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Prop
         className={`ch-modal ch-modal-${phase} overflow-visible border-0 bg-transparent p-0 shadow-none max-w-3xl w-[calc(100vw-2rem)] data-[state=open]:duration-500`}
         showCloseButton={false}
       >
-        {/* LiquidLight fills the viewport behind the Radix overlay */}
-        <LiquidLightBackdrop phase={phase} pulseKey={speech.pulses.length} />
+        <LiquidLightBackdrop phase={phase} pulseKey={audio.pulses.length} />
 
         <div className="ch-card relative rounded-3xl p-8 md:p-14 text-center backdrop-blur-md backdrop-saturate-150 bg-card/55 border border-border/25">
-          {/* subtle traveling highlight on the card edge */}
           <BorderBeam
             size={120}
             duration={8}
@@ -83,14 +91,16 @@ export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Prop
                     ? "oklch(0.45 0.27 291 / 0.9)"
                     : hasEnded
                       ? "oklch(0.89 0.17 92 / 0.95)"
-                      : "oklch(0.72 0.21 22 / 0.95)",
+                      : isError
+                        ? "oklch(0.65 0.24 28 / 0.95)"
+                        : "oklch(0.72 0.21 22 / 0.95)",
                 }}
               >
                 {phaseLabel}
               </div>
             </DialogTitle>
             <DialogDescription className="sr-only">
-              A stranger is reading you a compliment through the hotline.
+              A stranger's recorded audio compliment is playing through the hotline.
             </DialogDescription>
           </DialogHeader>
 
@@ -105,34 +115,35 @@ export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Prop
             </div>
           )}
 
-          {!isRinging && text && (
-            <>
-              <div className="mb-10 mt-4">
-                <ComplimentText
-                  text={text}
-                  wordIndex={speech.wordIndex}
-                  hasStarted={hasStarted}
-                  hasEnded={hasEnded}
-                />
-              </div>
-
-              <div
-                className="font-serif italic text-magenta font-semibold transition-opacity duration-700"
-                style={{ opacity: hasStarted ? 1 : 0 }}
+          {hasStarted && !isError && (
+            <div className="py-6 flex flex-col items-center gap-8">
+              <blockquote
+                className="font-display text-3xl md:text-5xl leading-none tracking-wide text-foreground"
+                style={{ width: "100%" }}
               >
-                — {compliment.name || "a stranger"}
+                {compliment.name || "a stranger"}
+              </blockquote>
+              <div className="font-serif italic text-lg md:text-xl text-muted-foreground">
+                {hasEnded ? "said something kind." : "is saying something kind..."}
               </div>
 
-              <div className="mt-10 min-h-[72px] flex items-center justify-center">
+              <div className="min-h-[72px] flex items-center justify-center" style={{ width: "100%" }}>
                 {!hasEnded ? (
-                  <TravelingWaveform state={speech} />
+                  <TravelingWaveform state={audio} />
                 ) : (
                   <div className="text-citrus font-semibold animate-pulse tracking-widest uppercase text-sm">
                     ✨ now it&apos;s your turn
                   </div>
                 )}
               </div>
-            </>
+            </div>
+          )}
+
+          {isError && (
+            <div className="py-8 text-center space-y-2">
+              <p className="text-destructive font-mono text-sm">the line dropped.</p>
+              <p className="text-muted-foreground text-sm">try another, or record your own below.</p>
+            </div>
           )}
 
           <style>{`

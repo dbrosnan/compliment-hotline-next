@@ -1,12 +1,11 @@
 export type ComplimentItem = {
   id: number;
   name: string | null;
-  message: string | null;
   has_audio: boolean;
   duration_ms: number | null;
   created_at: number;
   /** Only present on /recent responses. Omitted by older clients / fallback data. */
-  status?: "approved" | "seed";
+  status?: "approved";
 };
 
 export type RecentResponse = {
@@ -34,9 +33,6 @@ export const fetchRecent = (cursor?: string) =>
 
 export const fetchStats = () => req<{ total: number }>("/api/compliments/stats");
 
-export const submitText = (body: { name?: string; message: string; hp?: string }) =>
-  req<{ id: number }>("/api/compliments/text", { method: "POST", body: JSON.stringify(body) });
-
 export const initAudio = (body: { name?: string; duration_ms: number; mime_type: string }) =>
   req<{ id: number; put_url: string; audio_key: string }>("/api/compliments/audio/init", {
     method: "POST",
@@ -48,3 +44,5 @@ export const finalizeAudio = (body: { id: number }) =>
     method: "POST",
     body: JSON.stringify(body),
   });
+
+export const audioUrl = (id: number) => `/api/compliments/${id}/audio`;

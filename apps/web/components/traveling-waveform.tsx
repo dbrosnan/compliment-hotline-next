@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { SpeechState } from "@/lib/use-speech";
+import type { AudioState } from "@/lib/use-audio";
 
 const BARS = 41;
 const BAR_WIDTH = 4;
@@ -11,11 +11,12 @@ const PULSE_ORIGIN = 4;
 const PULSE_SPEED = 58;
 
 /**
- * Speech-reactive faux-waveform. Each word boundary spawns a gaussian
- * pulse at the left edge that travels rightward while decaying. When
- * phase is 'delivered', pulses collapse into a central glowing dot.
+ * Audio-reactive faux-waveform. Each pulse emitted by useAudio (fired
+ * every ~150ms while audio is playing) spawns a gaussian bump at the
+ * left edge that travels rightward while decaying. When phase is
+ * 'delivered', pulses collapse into a central glowing dot.
  */
-export function TravelingWaveform({ state }: { state: SpeechState }) {
+export function TravelingWaveform({ state }: { state: AudioState }) {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {

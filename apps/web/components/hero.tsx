@@ -12,20 +12,14 @@ import { fetchRecent, type ComplimentItem } from "@/lib/api";
 
 const WORDS = "COMPLIMENT".split("");
 
-const FALLBACK_COMPLIMENTS: ComplimentItem[] = [
-  { id: -101, name: "a stranger", message: "your laugh is contagious and i hope you know it", has_audio: false, duration_ms: null, created_at: 0 },
-  { id: -102, name: null, message: "you're a good one. keep going.", has_audio: false, duration_ms: null, created_at: 0 },
-  { id: -103, name: "M", message: "that jacket? a choice. and the right one.", has_audio: false, duration_ms: null, created_at: 0 },
-  { id: -104, name: null, message: "you're allowed to take up space. please do.", has_audio: false, duration_ms: null, created_at: 0 },
-  { id: -105, name: "phone 3", message: "whoever picks up next, i hope your day breaks open softly", has_audio: false, duration_ms: null, created_at: 0 },
-];
-
 export function Hero() {
   const [mounted, setMounted] = useState(false);
   const [videoOk, setVideoOk] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const [pool, setPool] = useState<ComplimentItem[]>(FALLBACK_COMPLIMENTS);
+  // Pool contains ONLY approved audio compliments. On a fresh deploy with
+  // nothing approved yet, pool stays empty and clicking pick-up is a no-op.
+  const [pool, setPool] = useState<ComplimentItem[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState<ComplimentItem | null>(null);
 
@@ -33,19 +27,27 @@ export function Hero() {
     setMounted(true);
     fetchRecent()
       .then((data) => {
-        // Hero's random pool is ONLY human-approved compliments. Seeds
-        // (starter content baked into the DB) are excluded so every voiced
-        // compliment is a real stranger's. If no approved items exist yet,
-        // fall back to the hardcoded pool so the CTA still works.
-        const approved = data.items.filter(
-          (c) => c.message && c.status === "approved",
+        // Only approved audio compliments enter the random-pick pool.
+        // Seeds / pending / rejected are excluded. Rows without
+        // has_audio are excluded because text-only compliments no
+        // longer exist.
+        const approvedAudio = data.items.filter(
+          (c) => c.status === "approved" && c.has_audio,
         );
-        if (approved.length > 0) setPool(approved);
+        setPool(approvedAudio);
       })
-      .catch(() => {});
+      .catch(() => {
+        setPool([]);
+      });
   }, []);
 
   const pickUp = () => {
+    if (pool.length === 0) {
+      // No approved audio yet — scroll to the record section so the
+      // first-ever compliment can be dropped.
+      document.getElementById("submit")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
     const c = pool[Math.floor(Math.random() * pool.length)];
     if (!c) return;
     setSelected(c);

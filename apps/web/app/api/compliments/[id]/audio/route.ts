@@ -15,7 +15,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     .first<{ audio_key: string | null; mime_type: string | null; status: string }>();
 
   if (!row || !row.audio_key) return err("not found", 404);
-  if (!["approved", "seed"].includes(row.status)) return err("not available", 404);
+  if (row.status !== "approved") return err("not available", 404);
 
   const obj = await env.AUDIO.get(row.audio_key);
   if (!obj) return err("audio missing", 404);
