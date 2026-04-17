@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@workspace/ui/components/button";
 import { DiscoBall } from "./disco-ball";
 import { SparkleField } from "./sparkle-field";
+import { PhoneParade } from "./phone-parade";
 import { PickUpModal } from "./pick-up-modal";
 import { fetchRecent, type ComplimentItem } from "@/lib/api";
 
@@ -53,11 +54,12 @@ export function Hero() {
 
   return (
     <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
-      {/* Remotion hero video — muted, loop, inline, poster fallback */}
+      {/* Remotion hero video — our 18s animated reel of phones + disco ball +
+          cart + record invite. Bumped to 75% opacity so it actually reads. */}
       {videoOk && (
         <video
           ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          className="absolute inset-0 w-full h-full object-cover opacity-75 mix-blend-screen"
           autoPlay
           muted
           loop
@@ -70,24 +72,30 @@ export function Hero() {
         </video>
       )}
 
+      {/* Kinetic phone parade — 6 floating + ringing rotary phones */}
+      <PhoneParade />
+
       {/* Ambient atmosphere */}
       <div className="pointer-events-none absolute inset-0">
-        <SparkleField count={48} />
-        <div className="absolute top-10 right-10 h-28 w-28 opacity-70">
+        <SparkleField count={60} />
+        <div className="absolute top-8 right-8 h-32 w-32 opacity-90 drop-shadow-[0_0_40px_oklch(0.70_0.28_338/0.45)]">
+          <DiscoBall />
+        </div>
+        <div className="absolute top-24 left-12 h-16 w-16 opacity-50 drop-shadow-[0_0_30px_oklch(0.89_0.17_92/0.4)]">
           <DiscoBall />
         </div>
       </div>
 
-      {/* Scanlines + vignette */}
+      {/* Scanlines + vignette — vignette lightened so the video shows through */}
       <div
-        className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-50"
+        className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-40"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(255,255,255,0.03) 0 1px, transparent 1px 3px)",
+            "repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 3px)",
         }}
         aria-hidden
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/40 via-background/20 to-background" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/70" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 text-center">
         <p className="font-mono mb-6 text-xs uppercase tracking-[0.3em] text-muted-foreground opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:1400ms]">

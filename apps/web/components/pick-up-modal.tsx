@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -25,13 +25,19 @@ export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Prop
   const text = compliment?.message ?? null;
   const speech = useSpeech(text, { active: open && !!text, rate: 0.95 });
 
-  // Delivered -> idle transition is our cue to auto-scroll to submit
+  // We want to fire onFinished ONLY after the full delivered -> idle
+  // transition, not on the initial render where phase starts as "idle".
+  // Track the previous phase so we only fire on an actual transition.
+  const prevPhase = useRef<typeof speech.phase>("idle");
   useEffect(() => {
-    if (open && speech.phase === "idle" && !!text) {
+    const was = prevPhase.current;
+    const now = speech.phase;
+    if (open && was === "delivered" && now === "idle") {
       onFinished();
     }
+    prevPhase.current = now;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speech.phase]);
+  }, [speech.phase, open]);
 
   if (!compliment) return null;
 
