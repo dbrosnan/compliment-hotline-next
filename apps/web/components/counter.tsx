@@ -18,7 +18,7 @@ export function Counter() {
 
   return (
     <section className="px-6 py-20">
-      <div className="mx-auto max-w-3xl text-center">
+      <div className="mx-auto w-full max-w-3xl text-center">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
           Total compliments received
         </p>

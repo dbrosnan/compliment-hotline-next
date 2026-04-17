@@ -11,7 +11,7 @@ export function PhoneParade() {
       {PHONES.map((p, i) => (
         <div
           key={i}
-          className="absolute"
+          className="absolute sm:[transform:scale(1.4)] md:[transform:scale(1.7)] origin-center"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
@@ -52,13 +52,15 @@ export function PhoneParade() {
   );
 }
 
+// Sizes are in CSS pixels at the mobile baseline; we scale up on sm:+ via
+// the `scale-` transform on the wrapper so phones don't crowd narrow viewports.
 const PHONES = [
-  { x: 8, y: 14, size: 70, tilt: -14, opacity: 0.35, duration: 14, delay: 0 },
-  { x: 88, y: 22, size: 56, tilt: 18, opacity: 0.28, duration: 16, delay: 2 },
-  { x: 18, y: 70, size: 64, tilt: 22, opacity: 0.32, duration: 13, delay: 4 },
-  { x: 78, y: 78, size: 52, tilt: -26, opacity: 0.26, duration: 15, delay: 1 },
-  { x: 4, y: 46, size: 44, tilt: 12, opacity: 0.22, duration: 17, delay: 3 },
-  { x: 92, y: 52, size: 48, tilt: -18, opacity: 0.24, duration: 12, delay: 5 },
+  { x: 6, y: 14, size: 42, tilt: -14, opacity: 0.3, duration: 14, delay: 0 },
+  { x: 86, y: 22, size: 34, tilt: 18, opacity: 0.24, duration: 16, delay: 2 },
+  { x: 16, y: 72, size: 40, tilt: 22, opacity: 0.28, duration: 13, delay: 4 },
+  { x: 80, y: 80, size: 32, tilt: -26, opacity: 0.22, duration: 15, delay: 1 },
+  { x: 2, y: 48, size: 28, tilt: 12, opacity: 0.18, duration: 17, delay: 3 },
+  { x: 94, y: 54, size: 30, tilt: -18, opacity: 0.2, duration: 12, delay: 5 },
 ];
 
 function RotaryPhone() {

@@ -59,7 +59,7 @@ export function Hero() {
       {videoOk && (
         <video
           ref={videoRef}
-          className="absolute inset-0 w-full h-full object-cover opacity-75 mix-blend-screen"
+          className="absolute inset-0 w-full h-full object-cover opacity-55"
           autoPlay
           muted
           loop
@@ -77,16 +77,16 @@ export function Hero() {
 
       {/* Ambient atmosphere */}
       <div className="pointer-events-none absolute inset-0">
-        <SparkleField count={60} />
-        <div className="absolute top-8 right-8 h-32 w-32 opacity-90 drop-shadow-[0_0_40px_oklch(0.70_0.28_338/0.45)]">
+        <SparkleField count={48} />
+        <div className="absolute top-6 right-6 h-20 w-20 sm:top-8 sm:right-8 sm:h-28 sm:w-28 md:h-32 md:w-32 opacity-90 drop-shadow-[0_0_40px_oklch(0.70_0.28_338/0.45)]">
           <DiscoBall />
         </div>
-        <div className="absolute top-24 left-12 h-16 w-16 opacity-50 drop-shadow-[0_0_30px_oklch(0.89_0.17_92/0.4)]">
+        <div className="hidden sm:block absolute top-24 left-12 h-16 w-16 opacity-50 drop-shadow-[0_0_30px_oklch(0.89_0.17_92/0.4)]">
           <DiscoBall />
         </div>
       </div>
 
-      {/* Scanlines + vignette — vignette lightened so the video shows through */}
+      {/* Scanlines */}
       <div
         className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-40"
         style={{
@@ -95,14 +95,24 @@ export function Hero() {
         }}
         aria-hidden
       />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/70" />
+      {/* Layered vignette: top+bottom fade to bg so content has contrast */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/50 via-background/20 to-background/80" aria-hidden />
+      {/* Soft radial under the copy column so the tagline + CTA stay readable */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden
+        style={{
+          background:
+            "radial-gradient(ellipse 60% 50% at 50% 50%, oklch(0.17 0.08 290 / 0.65) 0%, transparent 70%)",
+        }}
+      />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 text-center">
+      <div className="relative z-10 mx-auto w-full max-w-5xl px-6 py-12 text-center">
         <p className="font-mono mb-6 text-xs uppercase tracking-[0.3em] text-muted-foreground opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:1400ms]">
           📞 An analog art piece for a digital disco
         </p>
 
-        <h1 className="font-display whitespace-nowrap text-[clamp(2.5rem,9vw,7rem)] leading-none tracking-wide text-foreground">
+        <h1 className="font-display md:whitespace-nowrap text-[clamp(2rem,11vw,7rem)] leading-[0.95] tracking-wide text-foreground text-balance">
           {WORDS.map((ch, i) => (
             <span
               key={i}
@@ -118,11 +128,14 @@ export function Hero() {
           ))}
         </h1>
 
-        <div className="font-display mt-2 text-[clamp(2rem,6vw,4.5rem)] leading-none tracking-widest text-accent">
+        <div className="font-display mt-2 text-[clamp(1.75rem,7vw,4.5rem)] leading-none tracking-widest text-accent">
           HOTLINE
         </div>
 
-        <p className="font-serif italic mx-auto mt-6 max-w-xl text-lg md:text-xl text-muted-foreground leading-relaxed opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:1600ms]">
+        <p
+          className="font-serif italic mt-6 text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:1600ms]"
+          style={{ display: "block", width: "100%", maxWidth: "36rem", marginLeft: "auto", marginRight: "auto" }}
+        >
           Pick up the phone. Hear a compliment from a stranger. Leave one for the next person.
         </p>
 
@@ -141,13 +154,16 @@ export function Hero() {
                 <HandsetSVG />
               </div>
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="flex h-24 w-24 items-center justify-center rounded-full bg-cream text-midnight shadow-glow ring-4 ring-primary/40 transition-transform duration-300 group-hover:scale-110 group-active:scale-95 animate-pulse md:h-28 md:w-28">
+                <div className="flex h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 items-center justify-center rounded-full bg-cream text-midnight shadow-glow ring-4 ring-primary/40 transition-transform duration-300 group-hover:scale-110 group-active:scale-95 animate-pulse">
                   <PlayIcon />
                 </div>
               </div>
             </div>
 
-            <div className="font-display mt-8 max-w-3xl text-[clamp(1.6rem,4.5vw,3rem)] leading-tight tracking-wide text-accent drop-shadow-[0_4px_20px_oklch(0.89_0.17_92/0.4)]">
+            <div
+              className="font-display mt-8 text-[clamp(1.5rem,5vw,3rem)] leading-tight tracking-wide text-accent drop-shadow-[0_4px_20px_oklch(0.89_0.17_92/0.4)]"
+              style={{ display: "block", width: "100%", textAlign: "center" }}
+            >
               pick up the phone
               <br />
               <span className="text-coral">for a pick-me-up</span>
@@ -200,7 +216,7 @@ export function Hero() {
 
 function PlayIcon() {
   return (
-    <svg width="44" height="44" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className="h-7 w-7 sm:h-9 sm:w-9 md:h-11 md:w-11 ml-0.5">
       <path d="M6 4.5v15a1 1 0 0 0 1.555.832l12-7.5a1 1 0 0 0 0-1.664l-12-7.5A1 1 0 0 0 6 4.5Z" />
     </svg>
   );
@@ -209,12 +225,10 @@ function PlayIcon() {
 function HandsetSVG() {
   return (
     <svg
-      width="220"
-      height="220"
       viewBox="0 0 140 140"
       fill="none"
       aria-hidden
-      className="drop-shadow-[0_10px_40px_oklch(0.72_0.21_22/0.55)]"
+      className="h-40 w-40 sm:h-52 sm:w-52 md:h-56 md:w-56 drop-shadow-[0_10px_40px_oklch(0.72_0.21_22/0.55)]"
     >
       <defs>
         <linearGradient id="handsetGradHero" x1="0" y1="0" x2="1" y2="1">

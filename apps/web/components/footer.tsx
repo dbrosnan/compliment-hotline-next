@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <footer className="border-t border-border/20 py-12 px-6 text-center text-sm text-muted-foreground">
-      <div className="max-w-3xl mx-auto space-y-4">
+      <div className="w-full max-w-3xl mx-auto space-y-4">
         <div className="font-display text-3xl text-foreground">COMPLIMENT HOTLINE</div>
         <div>An art piece, a cart, eight phones, and you.</div>
         <div className="flex justify-center gap-6">

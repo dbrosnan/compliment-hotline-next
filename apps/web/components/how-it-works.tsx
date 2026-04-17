@@ -30,7 +30,7 @@ const STEPS = [
 export function HowItWorks() {
   return (
     <section id="how" className="relative px-6 py-24 md:py-32">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto w-full max-w-6xl">
         <div className="mb-16 text-center">
           <p className="font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
             The whole bit
