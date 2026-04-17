@@ -69,7 +69,20 @@ export function Hero() {
         <video
           ref={videoRef}
           className="absolute inset-0 w-full h-full object-contain opacity-55"
-          style={{ transform: "scale(0.85)", transformOrigin: "center" }}
+          style={{
+            transform: "scale(0.85)",
+            transformOrigin: "center",
+            // Feather the video edges so its own background color never
+            // shows as a hard rectangle against the page bg. Radial mask
+            // fades the corners into transparency; mix-blend-mode:screen
+            // then makes any remaining dark video pixels drop to the
+            // page bg instead of rendering as a lighter box.
+            maskImage:
+              "radial-gradient(ellipse 75% 75% at center, black 55%, transparent 95%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse 75% 75% at center, black 55%, transparent 95%)",
+            mixBlendMode: "screen",
+          }}
           autoPlay
           muted
           loop
