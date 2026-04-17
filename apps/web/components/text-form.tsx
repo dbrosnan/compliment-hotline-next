@@ -47,7 +47,7 @@ export function TextForm() {
   }
 
   return (
-    <form onSubmit={submit} className="space-y-5" noValidate>
+    <form onSubmit={submit} className="w-full space-y-5" style={{ width: "100%" }} noValidate>
       {/* Honeypot */}
       <input
         type="text"
@@ -60,7 +60,7 @@ export function TextForm() {
         aria-hidden
       />
 
-      <div className="space-y-2">
+      <div className="w-full space-y-2" style={{ width: "100%" }}>
         <Label htmlFor="ch-name" className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
           Your name (optional)
         </Label>
@@ -71,11 +71,12 @@ export function TextForm() {
           onChange={(e) => setName(e.target.value)}
           maxLength={60}
           placeholder="a stranger"
-          className="h-12 rounded-lg bg-background/40 border-border/50 focus-visible:border-primary focus-visible:ring-primary/40"
+          className="w-full h-12 rounded-lg bg-background/40 border-border/50 focus-visible:border-primary focus-visible:ring-primary/40"
+          style={{ width: "100%" }}
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="w-full space-y-2" style={{ width: "100%" }}>
         <Label htmlFor="ch-message" className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
           Your compliment
         </Label>
@@ -87,9 +88,10 @@ export function TextForm() {
           rows={5}
           placeholder="your laugh is contagious and i hope you know it"
           aria-describedby="ch-message-hint ch-message-count"
-          className="min-h-[8rem] rounded-lg bg-background/40 border-border/50 focus-visible:border-primary focus-visible:ring-primary/40 font-serif text-lg leading-snug resize-none"
+          className="w-full min-h-[8rem] rounded-lg bg-background/40 border-border/50 focus-visible:border-primary focus-visible:ring-primary/40 font-serif text-lg leading-snug resize-none"
+          style={{ width: "100%" }}
         />
-        <div className="flex justify-between text-xs text-muted-foreground">
+        <div className="flex w-full justify-between text-xs text-muted-foreground" style={{ width: "100%" }}>
           <span id="ch-message-hint">Be kind. Be specific.</span>
           <span id="ch-message-count" className="font-mono" aria-live="polite">
             {message.length} / {MAX}
@@ -107,6 +109,7 @@ export function TextForm() {
         disabled={status === "sending" || !message.trim()}
         aria-busy={status === "sending"}
         className="w-full rounded-full shadow-glow"
+        style={{ width: "100%" }}
       >
         {status === "sending" ? "Sending..." : "Send it through"}
       </Button>

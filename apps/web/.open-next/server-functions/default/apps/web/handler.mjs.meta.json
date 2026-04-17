@@ -3596,12 +3596,12 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/audio/init/route_client-reference-manifest.js": {
+    ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/[id]/audio/route_client-reference-manifest.js": {
       "bytes": 329,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/[id]/audio/route_client-reference-manifest.js": {
+    ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/audio/init/route_client-reference-manifest.js": {
       "bytes": 329,
       "imports": [],
       "format": "cjs"
@@ -3641,12 +3641,12 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/queue/route_client-reference-manifest.js": {
+    ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/login/route_client-reference-manifest.js": {
       "bytes": 318,
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/login/route_client-reference-manifest.js": {
+    ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/queue/route_client-reference-manifest.js": {
       "bytes": 318,
       "imports": [],
       "format": "cjs"
@@ -3710,14 +3710,14 @@
           "original": "/Users/drewbrosnan/Home-Projects/compliment-hotline-next/apps/web/.open-next/server-functions/default/apps/web/.next/server/app/api/compliments/audio/upload/route_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/audio/init/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/drewbrosnan/Home-Projects/compliment-hotline-next/apps/web/.open-next/server-functions/default/apps/web/.next/server/app/api/compliments/audio/init/route_client-reference-manifest.js"
-        },
-        {
           "path": ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/[id]/audio/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/drewbrosnan/Home-Projects/compliment-hotline-next/apps/web/.open-next/server-functions/default/apps/web/.next/server/app/api/compliments/[id]/audio/route_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/audio/init/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/drewbrosnan/Home-Projects/compliment-hotline-next/apps/web/.open-next/server-functions/default/apps/web/.next/server/app/api/compliments/audio/init/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/recent/route_client-reference-manifest.js",
@@ -3755,14 +3755,14 @@
           "original": "/Users/drewbrosnan/Home-Projects/compliment-hotline-next/apps/web/.open-next/server-functions/default/apps/web/.next/server/app/api/admin/delete/route_client-reference-manifest.js"
         },
         {
-          "path": ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/queue/route_client-reference-manifest.js",
-          "kind": "require-call",
-          "original": "/Users/drewbrosnan/Home-Projects/compliment-hotline-next/apps/web/.open-next/server-functions/default/apps/web/.next/server/app/api/admin/queue/route_client-reference-manifest.js"
-        },
-        {
           "path": ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/login/route_client-reference-manifest.js",
           "kind": "require-call",
           "original": "/Users/drewbrosnan/Home-Projects/compliment-hotline-next/apps/web/.open-next/server-functions/default/apps/web/.next/server/app/api/admin/login/route_client-reference-manifest.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/queue/route_client-reference-manifest.js",
+          "kind": "require-call",
+          "original": "/Users/drewbrosnan/Home-Projects/compliment-hotline-next/apps/web/.open-next/server-functions/default/apps/web/.next/server/app/api/admin/queue/route_client-reference-manifest.js"
         },
         {
           "path": ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/all/route_client-reference-manifest.js",
@@ -5202,7 +5202,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/apps/web/.next/server/chunks/ssr/[root-of-the-server]__6bb5db5f._.js": {
-      "bytes": 11184,
+      "bytes": 11621,
       "imports": [
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/shared/lib/no-fallback-error.external.js",
@@ -5224,7 +5224,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/apps/web/.next/server/chunks/ssr/_5724f7f0._.js": {
-      "bytes": 210604,
+      "bytes": 210950,
       "imports": [],
       "format": "cjs"
     },
@@ -8746,10 +8746,10 @@
         ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/audio/upload/route_client-reference-manifest.js": {
           "bytesInOutput": 507
         },
-        ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/audio/init/route_client-reference-manifest.js": {
+        ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/[id]/audio/route_client-reference-manifest.js": {
           "bytesInOutput": 503
         },
-        ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/[id]/audio/route_client-reference-manifest.js": {
+        ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/audio/init/route_client-reference-manifest.js": {
           "bytesInOutput": 503
         },
         ".open-next/server-functions/default/apps/web/.next/server/app/api/compliments/recent/route_client-reference-manifest.js": {
@@ -8773,10 +8773,10 @@
         ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/delete/route_client-reference-manifest.js": {
           "bytesInOutput": 484
         },
-        ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/queue/route_client-reference-manifest.js": {
+        ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/login/route_client-reference-manifest.js": {
           "bytesInOutput": 482
         },
-        ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/login/route_client-reference-manifest.js": {
+        ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/queue/route_client-reference-manifest.js": {
           "bytesInOutput": 482
         },
         ".open-next/server-functions/default/apps/web/.next/server/app/api/admin/all/route_client-reference-manifest.js": {
@@ -9041,13 +9041,13 @@
           "bytesInOutput": 111961
         },
         ".open-next/server-functions/default/apps/web/.next/server/chunks/ssr/[root-of-the-server]__6bb5db5f._.js": {
-          "bytesInOutput": 11323
+          "bytesInOutput": 11760
         },
         ".open-next/server-functions/default/apps/web/.next/server/chunks/ssr/_4c7e130b._.js": {
           "bytesInOutput": 17853
         },
         ".open-next/server-functions/default/apps/web/.next/server/chunks/ssr/_5724f7f0._.js": {
-          "bytesInOutput": 225218
+          "bytesInOutput": 225564
         },
         ".open-next/server-functions/default/apps/web/.next/server/chunks/ssr/_bd72c6d6._.js": {
           "bytesInOutput": 35803
@@ -9269,7 +9269,7 @@
           "bytesInOutput": 60685
         }
       },
-      "bytes": 3188360
+      "bytes": 3189143
     }
   }
 }

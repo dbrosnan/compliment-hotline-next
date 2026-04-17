@@ -228,6 +228,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html, body {
+    /* Force full-viewport width. Without this, Tailwind v4 + shadcn Lyra
+     * intermittently resolves block `width: auto` as "shrink to narrowest
+     * content" on mobile, collapsing entire sections to 1-word-per-line. */
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
   html {
     color-scheme: dark;
   }
@@ -237,6 +245,10 @@
   ::selection {
     background: var(--ch-coral);
     color: var(--ch-midnight);
+  }
+  /* Every direct child of <main> fills viewport — additional safety net. */
+  main > section, main > footer {
+    width: 100%;
   }
 }
 
