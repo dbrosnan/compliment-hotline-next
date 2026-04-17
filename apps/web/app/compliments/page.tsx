@@ -251,8 +251,8 @@ export default function ComplimentsAdminPage() {
   }
 
   return (
-    <main className="min-h-svh p-6 md:p-10">
-      <div className="mx-auto w-full max-w-6xl space-y-6">
+    <main className="min-h-svh p-3 sm:p-6 md:p-10">
+      <div className="mx-auto w-full max-w-6xl space-y-6 overflow-x-hidden">
         {/* Header */}
         <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/40">
           <div>
@@ -336,8 +336,8 @@ export default function ComplimentsAdminPage() {
           </Card>
         )}
 
-        {/* Table */}
-        <div className="card bg-card/40 border border-border/30 rounded-lg overflow-hidden">
+        {/* Table — desktop only (hidden on <md) */}
+        <div className="hidden md:block card bg-card/40 border border-border/30 rounded-lg overflow-x-auto">
           <table className="w-full text-sm" aria-label="All compliments">
             <caption className="sr-only">All compliments across every status, filtered by the tabs above.</caption>
             <thead className="bg-background/40">
@@ -494,6 +494,155 @@ export default function ComplimentsAdminPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile card list — stacked vertically, all actions inline,
+            no horizontal scrolling needed. Renders only on <md. */}
+        <div className="md:hidden space-y-3">
+          {filtered === null && (
+            <Card className="bg-card/40 border-border/30">
+              <CardContent className="p-6 text-center text-muted-foreground">
+                Loading…
+              </CardContent>
+            </Card>
+          )}
+          {filtered && filtered.length === 0 && (
+            <Card className="bg-card/40 border-border/30">
+              <CardContent className="p-10 text-center">
+                <div className="text-4xl mb-2">📭</div>
+                <div className="text-muted-foreground">
+                  No compliments match this filter.
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {filtered?.map((r) => (
+            <Card
+              key={r.id}
+              className={`bg-card/40 border-border/30 overflow-hidden ${STATUS_ROW_BG[r.status]}`}
+            >
+              <CardContent className="p-4 space-y-3">
+                {/* Row 1: select + id + status pill + time */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <input
+                    type="checkbox"
+                    checked={selected.has(r.id)}
+                    onChange={() => toggleRow(r.id)}
+                    aria-label={`Select compliment ${r.id}`}
+                    className="accent-primary h-4 w-4"
+                  />
+                  <span className="font-mono text-xs text-muted-foreground">#{r.id}</span>
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide ${STATUS_PILL[r.status]}`}
+                  >
+                    {r.status === "approved" && <span aria-hidden>✓</span>}
+                    {r.status === "rejected" && <span aria-hidden>✕</span>}
+                    {r.status}
+                  </span>
+                  <span className="font-mono text-xs text-muted-foreground ml-auto whitespace-nowrap">
+                    {new Date(r.created_at * 1000).toLocaleString([], {
+                      month: "short",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+
+                {/* Row 2: name */}
+                <div className="text-foreground/90 font-medium">
+                  {r.name || (
+                    <span className="italic text-muted-foreground/60 font-normal">anonymous</span>
+                  )}
+                </div>
+
+                {/* Row 3: audio player + transcript */}
+                {r.audio_key ? (
+                  <audio
+                    controls
+                    preload="none"
+                    src={`/api/admin/audio/${r.id}`}
+                    className="h-9 w-full"
+                  />
+                ) : (
+                  <span className="text-xs italic text-muted-foreground/60">(no audio)</span>
+                )}
+                {r.transcript && (
+                  <div className="text-xs text-muted-foreground italic">
+                    “{r.transcript}”
+                  </div>
+                )}
+                {r.audio_key && !r.transcript && r.status === "approved" && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setBusy(true);
+                      try {
+                        const res = await fetch("/api/admin/transcribe", {
+                          method: "POST",
+                          credentials: "include",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ id: r.id }),
+                        });
+                        const d = await res.json();
+                        setToast(d.ok ? "transcribed" : d.error || "transcribe failed");
+                        await load();
+                      } finally {
+                        setBusy(false);
+                      }
+                    }}
+                    className="text-xs text-muted-foreground underline hover:text-foreground"
+                  >
+                    transcribe
+                  </button>
+                )}
+                {r.reject_reason && (
+                  <div className="text-destructive text-xs">✕ {r.reject_reason}</div>
+                )}
+
+                {/* Row 4: actions (full-width buttons on mobile) */}
+                <div className="grid grid-cols-3 gap-2 pt-1">
+                  {r.status !== "approved" ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      aria-label={`Approve compliment ${r.id}`}
+                      onClick={() => act("approve", [r.id])}
+                      disabled={busy}
+                    >
+                      <span aria-hidden className="mr-1">✓</span>Approve
+                    </Button>
+                  ) : (
+                    <div />
+                  )}
+                  {r.audio_key ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      aria-label={`Download audio for compliment ${r.id}`}
+                      onClick={() => downloadAudio(r)}
+                    >
+                      <span aria-hidden className="mr-1">⬇</span>Download
+                    </Button>
+                  ) : (
+                    <div />
+                  )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    aria-label={`Delete compliment ${r.id}`}
+                    className="text-destructive hover:bg-destructive/10"
+                    onClick={() => {
+                      if (confirm(`Delete compliment #${r.id}?`)) act("delete", [r.id]);
+                    }}
+                    disabled={busy}
+                  >
+                    <span aria-hidden className="mr-1">🗑</span>Delete
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
         <footer className="text-xs text-muted-foreground/60 font-mono pt-4">
