@@ -62,14 +62,22 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
         >
           {doubled.map((c, i) => {
             const secs = c.duration_ms ? Math.round(c.duration_ms / 1000) : null;
+            // Transcript is hidden text for screen readers + hover tooltip.
+            // Visually we keep it a mystery — you have to pick up to hear.
+            const speaker = c.name || "a stranger";
+            const ariaLabel = c.transcript
+              ? `${secs ?? "?"}s compliment from ${speaker}: ${c.transcript}`
+              : `${secs ?? "?"}s compliment from ${speaker}`;
             return (
               <Card
                 key={`${c.id}-${i}`}
                 className="shrink-0 inline-flex items-center gap-3 px-5 py-3 bg-card/70 border-border/30"
+                aria-label={ariaLabel}
+                title={c.transcript || undefined}
               >
                 <span className="text-lg" aria-hidden>🎙</span>
                 <span className="font-display text-lg text-foreground tracking-wide">
-                  {c.name || "a stranger"}
+                  {speaker}
                 </span>
                 {secs !== null && (
                   <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">

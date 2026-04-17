@@ -27,6 +27,9 @@
       "id": "e1bedb8c7a864b8982d801e5d7ff7f60"
     }
   ],
+  "ai": {
+    "binding": "AI"
+  },
   "vars": {
     "MAX_AUDIO_BYTES": "2097152",
     "MAX_AUDIO_DURATION_MS": "30000",

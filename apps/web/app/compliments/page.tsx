@@ -15,6 +15,7 @@ type Row = {
   duration_ms: number | null;
   status: "pending" | "approved" | "rejected";
   reject_reason: string | null;
+  transcript: string | null;
   created_at: number;
 };
 
@@ -389,6 +390,35 @@ export default function ComplimentsAdminPage() {
                       />
                     ) : (
                       <span className="text-xs italic text-muted-foreground/60">(no audio)</span>
+                    )}
+                    {r.transcript && (
+                      <div className="text-xs text-muted-foreground mt-1 italic max-w-sm">
+                        “{r.transcript}”
+                      </div>
+                    )}
+                    {r.audio_key && !r.transcript && r.status === "approved" && (
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          setBusy(true);
+                          try {
+                            const res = await fetch("/api/admin/transcribe", {
+                              method: "POST",
+                              credentials: "include",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ id: r.id }),
+                            });
+                            const d = await res.json();
+                            setToast(d.ok ? "transcribed" : d.error || "transcribe failed");
+                            await load();
+                          } finally {
+                            setBusy(false);
+                          }
+                        }}
+                        className="text-xs text-muted-foreground underline mt-1 hover:text-foreground"
+                      >
+                        transcribe
+                      </button>
                     )}
                     {r.reject_reason && (
                       <div className="text-destructive text-xs mt-1">

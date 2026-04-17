@@ -3,6 +3,10 @@ export type ComplimentItem = {
   name: string | null;
   has_audio: boolean;
   duration_ms: number | null;
+  /** Populated by Workers AI Whisper after approval. Used for a11y
+   *  (aria-label on the marquee + pickup modal) — NOT displayed as
+   *  decorative text, so we preserve the surprise of picking up. */
+  transcript?: string | null;
   created_at: number;
   /** Only present on /recent responses. Omitted by older clients / fallback data. */
   status?: "approved";

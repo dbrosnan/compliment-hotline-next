@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -34,6 +34,10 @@ type Props = {
 export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Props) {
   const src = compliment ? audioUrl(compliment.id) : null;
   const audio = useAudio(src, { active: open && !!src });
+  const [showCaptions, setShowCaptions] = useState(false);
+  useEffect(() => {
+    if (!open) setShowCaptions(false);
+  }, [open]);
 
   // Only fire onFinished after a real delivered -> idle transition.
   const prevPhase = useRef<typeof audio.phase>("idle");
@@ -100,7 +104,9 @@ export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Prop
               </div>
             </DialogTitle>
             <DialogDescription className="sr-only">
-              A stranger's recorded audio compliment is playing through the hotline.
+              {compliment.transcript
+                ? `A stranger named ${compliment.name || "anonymous"} is saying: ${compliment.transcript}`
+                : "A stranger's recorded audio compliment is playing through the hotline."}
             </DialogDescription>
           </DialogHeader>
 
@@ -136,6 +142,30 @@ export function PickUpModal({ open, compliment, onOpenChange, onFinished }: Prop
                   </div>
                 )}
               </div>
+
+              {/* Captions (CC) toggle — off by default to preserve the
+                  surprise for hearing users, on-demand for Deaf / hard of
+                  hearing. Only rendered when a transcript exists. */}
+              {compliment.transcript && (
+                <div className="w-full max-w-xl mx-auto">
+                  <button
+                    type="button"
+                    onClick={() => setShowCaptions((v) => !v)}
+                    aria-pressed={showCaptions}
+                    className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70 hover:text-foreground transition-colors"
+                  >
+                    {showCaptions ? "▾ hide captions" : "▸ show captions (CC)"}
+                  </button>
+                  {showCaptions && (
+                    <p
+                      className="mt-3 font-serif italic text-base md:text-lg text-muted-foreground leading-relaxed"
+                      aria-live="polite"
+                    >
+                      “{compliment.transcript}”
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

@@ -1,4 +1,5 @@
 import type {
+  Ai,
   D1Database,
   R2Bucket,
   KVNamespace,
@@ -8,6 +9,7 @@ export interface CloudflareEnv {
   DB: D1Database;
   AUDIO: R2Bucket;
   RATE_LIMIT: KVNamespace;
+  AI: Ai;
 
   MAX_AUDIO_BYTES: string;
   MAX_AUDIO_DURATION_MS: string;
