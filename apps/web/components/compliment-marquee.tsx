@@ -5,12 +5,12 @@ import { Card } from "@workspace/ui/components/card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import { ShimmerButton } from "@workspace/ui/components/shimmer-button";
 import { fetchRecent, type ComplimentItem } from "@/lib/api";
+import { PsychedelicIcon } from "./psychedelic-icons";
 
 /**
- * Audio-only live marquee. Displays approved audio compliments as
- * name + duration pills that scroll across the bottom of the hero.
- * Falls back to a SKELETON or an empty-state CTA; no text fallback
- * since text compliments were removed.
+ * Audio-only live marquee. Each card shows a deterministic random
+ * psychedelic glyph (1 of 25), the speaker's name, the transcript
+ * quote, and the duration. Hidden empty state + skeleton loader.
  */
 export function ComplimentMarquee() {
   const [items, setItems] = useState<ComplimentItem[] | null>(null);
@@ -20,7 +20,6 @@ export function ComplimentMarquee() {
     fetchRecent()
       .then((data) => {
         if (cancelled) return;
-        // Only show items that actually have audio.
         const audio = data.items.filter((c) => c.has_audio);
         setItems(audio);
       })
@@ -58,31 +57,40 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
       >
         <div
           className="flex gap-4 whitespace-nowrap"
-          style={{ width: "max-content", animation: "ch-marquee 40s linear infinite" }}
+          style={{ width: "max-content", animation: "ch-marquee 60s linear infinite" }}
         >
           {doubled.map((c, i) => {
             const secs = c.duration_ms ? Math.round(c.duration_ms / 1000) : null;
-            // Transcript is hidden text for screen readers + hover tooltip.
-            // Visually we keep it a mystery — you have to pick up to hear.
             const speaker = c.name || "a stranger";
-            const ariaLabel = c.transcript
-              ? `${secs ?? "?"}s compliment from ${speaker}: ${c.transcript}`
+            const quote = (c.transcript || "").trim();
+            const ariaLabel = quote
+              ? `${secs ?? "?"}s compliment from ${speaker}: ${quote}`
               : `${secs ?? "?"}s compliment from ${speaker}`;
             return (
               <Card
                 key={`${c.id}-${i}`}
-                className="shrink-0 inline-flex items-center gap-3 px-5 py-3 bg-card/70 border-border/30"
+                className="shrink-0 inline-flex flex-col items-start gap-2 px-5 py-4 bg-card/70 border-border/30 w-[280px] whitespace-normal"
                 aria-label={ariaLabel}
-                title={c.transcript || undefined}
               >
-                <span className="text-lg" aria-hidden>🎙</span>
-                <span className="font-display text-lg text-foreground tracking-wide">
-                  {speaker}
-                </span>
-                {secs !== null && (
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                    {secs}s
+                <div className="flex items-center gap-3 w-full">
+                  <PsychedelicIcon id={c.id} size={36} />
+                  <span className="font-display text-lg text-foreground tracking-wide truncate flex-1">
+                    {speaker}
                   </span>
+                  {secs !== null && (
+                    <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground shrink-0">
+                      {secs}s
+                    </span>
+                  )}
+                </div>
+                {quote ? (
+                  <p className="font-serif italic text-sm text-muted-foreground leading-snug line-clamp-2">
+                    “{quote}”
+                  </p>
+                ) : (
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">
+                    pick up to hear
+                  </p>
                 )}
               </Card>
             );
@@ -111,11 +119,15 @@ function MarqueeSkeleton() {
         {Array.from({ length: 6 }).map((_, i) => (
           <Card
             key={i}
-            className="shrink-0 inline-flex items-center gap-3 px-5 py-3 bg-card/40 border-border/30"
+            className="shrink-0 inline-flex flex-col items-start gap-2 px-5 py-4 bg-card/40 border-border/30 w-[280px]"
           >
-            <Skeleton className="h-5 w-5 rounded-full" />
-            <Skeleton className="h-4 w-28 rounded-sm" />
-            <Skeleton className="h-3 w-8 rounded-sm" />
+            <div className="flex items-center gap-3 w-full">
+              <Skeleton className="h-9 w-9 rounded-full" />
+              <Skeleton className="h-4 w-28 rounded-sm flex-1" />
+              <Skeleton className="h-3 w-8 rounded-sm" />
+            </div>
+            <Skeleton className="h-3 w-full rounded-sm" />
+            <Skeleton className="h-3 w-4/5 rounded-sm" />
           </Card>
         ))}
       </div>
