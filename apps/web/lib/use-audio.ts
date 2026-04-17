@@ -29,7 +29,6 @@ export type AudioController = AudioState & {
   cancel: () => void;
 };
 
-const RINGING_MS = 400; // brief "ringing" beat before actual playback
 const DELIVERED_MS = 1800;
 
 /**
@@ -62,7 +61,6 @@ export function useAudio(
   const pulseTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const rafId = useRef<number | null>(null);
   const deliveredTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const ringingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const cancel = useCallback(() => {
     if (audioRef.current) {
@@ -76,10 +74,8 @@ export function useAudio(
     }
     if (pulseTimer.current) clearInterval(pulseTimer.current);
     if (deliveredTimer.current) clearTimeout(deliveredTimer.current);
-    if (ringingTimer.current) clearTimeout(ringingTimer.current);
     pulseTimer.current = null;
     deliveredTimer.current = null;
-    ringingTimer.current = null;
   }, []);
 
   const start = useCallback(() => {
@@ -145,17 +141,18 @@ export function useAudio(
       setPhase("paused");
     };
 
-    // Small "ringing" beat so the modal's atmospheric intro isn't skipped
-    ringingTimer.current = setTimeout(() => {
-      audio.play().catch((e) => {
-        console.warn("[useAudio] play() rejected", e);
-        setErrorDetail({
-          kind: "other",
-          message: e instanceof Error ? e.message : "Playback was blocked by the browser.",
-        });
-        setPhase("error");
+    // Must call play() synchronously with the user gesture — iOS Safari
+    // blocks any play() called inside setTimeout/etc. The "ringing"
+    // phase is still rendered by the modal; it just lasts as long as
+    // the buffer takes to start (onplay transitions us to "speaking").
+    audio.play().catch((e) => {
+      console.warn("[useAudio] play() rejected", e);
+      setErrorDetail({
+        kind: "other",
+        message: e instanceof Error ? e.message : "Playback was blocked by the browser.",
       });
-    }, RINGING_MS);
+      setPhase("error");
+    });
   }, [src, cancel]);
 
   useEffect(() => {
