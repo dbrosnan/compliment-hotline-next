@@ -47,7 +47,7 @@ export function HowItWorks() {
               src="/cart-tour.mp4"
               poster="/cart-tour-poster.jpg"
               label="Compliment Hotline cart in action"
-              className="max-w-xs sm:max-w-sm"
+              className="max-w-sm sm:max-w-md lg:max-w-lg"
             />
           </div>
 

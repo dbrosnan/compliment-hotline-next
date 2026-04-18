@@ -128,15 +128,6 @@ const HeartPulse: IconFn = ({ grad = 1, k }) => (
   </svg>
 );
 
-// 8. hexagram
-const Hex: IconFn = ({ grad = 2, k }) => (
-  <svg viewBox={`0 0 ${S} ${S}`}>
-    <Defs k={k} />
-    <path d="M20 4 L34 28 L6 28 Z" fill="none" stroke={gradHref(k, grad)} strokeWidth="2" strokeLinejoin="round" />
-    <path d="M20 36 L6 12 L34 12 Z" fill="none" stroke={gradHref(k, grad)} strokeWidth="2" strokeLinejoin="round" />
-  </svg>
-);
-
 // 9. sunburst
 const Sun: IconFn = ({ grad = 3, k }) => (
   <svg viewBox={`0 0 ${S} ${S}`}>
@@ -338,7 +329,7 @@ const Vinyl: IconFn = ({ grad = 4, k }) => (
 
 const ICONS: IconFn[] = [
   Spiral, RayEye, Mushroom, ThirdEye, Bolt,
-  Flame, HeartPulse, Hex, Sun, Moon,
+  Flame, HeartPulse, Sun, Moon,
   Peace, Melt, Rainbow, Ripple, Daisy,
   Planet, Galaxy, Infinity8, Lotus, Yin,
   Butterfly, Drop, Crystal, CloudStar, Vinyl,
