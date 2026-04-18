@@ -1,69 +1,34 @@
+import { Card, CardContent } from "@workspace/ui/components/card";
 import { Reveal } from "./motion-primitives";
 import { SectionHeading } from "./section-heading";
 import { VerticalVideo } from "./vertical-video";
-import { MCMCard, MCMCardContent } from "@/components/mcm-card";
-import { Boomerang, KidneyBean, Sputnik } from "@/components/mcm-ornaments";
 
-type MCMVariant = "citrus" | "mustard";
-
-type StepOrnament = {
-  kind: "sputnik" | "boomerang" | "kidney";
-  color?: string;
-};
-
-type Step = {
-  n: string;
-  title: string;
-  body: string;
-  accent: string;
-  variant: MCMVariant;
-  ornament: StepOrnament;
-};
-
-const STEPS: Step[] = [
+const STEPS = [
   {
     n: "01",
     title: "Find the cart",
     body: "Look for the wooden cart rolling around the festival, draped in phone cords and disco light. Eight landline phones, all real, all ringing.",
     accent: "text-coral",
-    variant: "citrus",
-    ornament: { kind: "sputnik", color: "oklch(0.72 0.21 22)" },
   },
   {
     n: "02",
     title: "Pick up",
     body: "Grab the receiver. A stranger's compliment plays — something someone said out loud because they meant it.",
-    accent: "text-magenta",
-    variant: "mustard",
-    ornament: { kind: "boomerang", color: "oklch(0.70 0.28 338)" },
+    accent: "text-citrus",
   },
   {
     n: "03",
     title: "Record yours",
     body: "After the beep, leave a compliment for whoever picks up next. 30 seconds. Be kind. Be specific.",
-    accent: "text-coral",
-    variant: "citrus",
-    ornament: { kind: "kidney" },
+    accent: "text-mint",
   },
   {
     n: "04",
     title: "Or leave one here",
     body: "Can't make it to the cart? Drop a text or audio compliment below. We'll pipe it into the rotation.",
     accent: "text-magenta",
-    variant: "mustard",
-    ornament: { kind: "sputnik", color: "oklch(0.70 0.28 338)" },
   },
 ];
-
-function StepOrnamentEl({ ornament }: { ornament: StepOrnament }) {
-  if (ornament.kind === "sputnik") {
-    return <Sputnik size={32} color={ornament.color} />;
-  }
-  if (ornament.kind === "boomerang") {
-    return <Boomerang size={32} color={ornament.color} />;
-  }
-  return <KidneyBean size={32} />;
-}
 
 export function HowItWorks() {
   return (
@@ -90,20 +55,14 @@ export function HowItWorks() {
           <div className="flex flex-col gap-6">
             {STEPS.map((s, i) => (
               <Reveal key={s.n} index={i}>
-                <MCMCard variant={s.variant} tone="noise" className="block w-full">
-                  <MCMCardContent className="relative">
-                    <div
-                      aria-hidden
-                      className="pointer-events-none absolute"
-                      style={{ top: 16, right: 16 }}
-                    >
-                      <StepOrnamentEl ornament={s.ornament} />
-                    </div>
+                <Card className="group relative overflow-hidden bg-card/60 border-border/30 p-0">
+                  <CardContent className="p-6">
                     <div className={`font-display text-5xl ${s.accent} mb-4`}>{s.n}</div>
                     <h3 className="text-2xl font-semibold text-foreground mb-2">{s.title}</h3>
                     <p className="text-muted-foreground leading-relaxed">{s.body}</p>
-                  </MCMCardContent>
-                </MCMCard>
+                  </CardContent>
+                  <div className="pointer-events-none absolute -bottom-10 -right-10 h-32 w-32 rounded-full bg-coral/10 blur-2xl transition-colors duration-500 group-hover:bg-coral/30" />
+                </Card>
               </Reveal>
             ))}
           </div>

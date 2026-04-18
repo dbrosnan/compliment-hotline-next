@@ -12,13 +12,12 @@ import { PsychedelicIcon } from "./psychedelic-icons";
 /**
  * Audio-only live marquee. The cards drift right→left uniformly, but on
  * top of that each card independently:
- *   - bobs on Y with its own phase (9s)
- *   - tilts rotation with its own phase (14s)
- *   - breathes scale (6s)
- *   - sways X slightly (16s) — creates a serpentine ribbon effect
- * All periods are coprime so the compound motion never repeats. Hue
- * rotation was removed in the MCM-TV redesign (cards live inside a dark
- * CRT bezel now, so hue-rotate reads as error rather than trippy).
+ *   - bobs on Y with its own phase (7s)
+ *   - tilts rotation with its own phase (11s)
+ *   - breathes scale (5s)
+ *   - sways X slightly (13s) — creates a serpentine ribbon effect
+ *   - hue-rotates its icon filter (17s)
+ * All periods are coprime so the compound motion never repeats.
  */
 export function ComplimentMarquee() {
   const [items, setItems] = useState<ComplimentItem[] | null>(null);
@@ -108,7 +107,7 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
       >
         <div
           className="flex gap-6 whitespace-nowrap"
-          style={{ width: "max-content", animation: "ch-marquee 75s linear infinite" }}
+          style={{ width: "max-content", animation: "ch-marquee 60s linear infinite" }}
         >
           {doubled.map((c, i) => {
             const secs = c.duration_ms ? Math.round(c.duration_ms / 1000) : null;
@@ -123,20 +122,20 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
             // 5 coprime-ish periods. Pack into a single CSS
             // animation-delay list matching the order in .ch-trippy below.
             const delay = [
-              phase(seed, 9),      // bob Y
-              phase(seed + 1, 14), // tilt
-              phase(seed + 2, 6),  // breathe
-              phase(seed + 3, 16), // sway X
+              phase(seed, 7),   // bob Y
+              phase(seed + 1, 11), // tilt
+              phase(seed + 2, 5),  // breathe
+              phase(seed + 3, 13), // sway X
+              phase(seed + 4, 17), // hue
             ].join(", ");
-            // Per-card random flight envelope. Amplitudes reduced ~40%
-            // from the original pre-MCM values since cards now live
-            // inside a CRT bezel where subtler motion reads better.
-            // Y bob 26-43px; tilt 3-7deg; breathe 0.88-1.14; sway 5-13px.
-            const bobY = 26 + rand(seed + 10) * 17;
-            const tilt = 3 + rand(seed + 11) * 4;
+            // Per-card random flight envelope. Y bob ranges 44-72px
+            // (so some cards fly much higher/lower than others);
+            // tilt 5-12deg; breathe 0.88-1.14; sway 8-22px.
+            const bobY = 44 + rand(seed + 10) * 28;
+            const tilt = 5 + rand(seed + 11) * 7;
             const breatheMin = 0.9 - rand(seed + 12) * 0.04;
             const breatheMax = 1.08 + rand(seed + 13) * 0.08;
-            const swayX = 5 + rand(seed + 14) * 8;
+            const swayX = 8 + rand(seed + 14) * 14;
             return (
               <div
                 key={`${c.id}-${i}`}
@@ -218,13 +217,17 @@ function MarqueeTrack({ items }: { items: ComplimentItem[] }) {
           0%, 100% { transform: translateX(calc(var(--sway-x, 12px) * -1)); }
           50%      { transform: translateX(var(--sway-x, 12px)); }
         }
+        @keyframes ch-hue {
+          0%, 100% { filter: hue-rotate(0deg) saturate(1); }
+          50%      { filter: hue-rotate(35deg) saturate(1.25); }
+        }
         .ch-trippy {
-          animation-name: ch-bob-y, ch-tilt, ch-breathe, ch-sway-x;
-          animation-duration: 9s, 14s, 6s, 16s;
+          animation-name: ch-bob-y, ch-tilt, ch-breathe, ch-sway-x, ch-hue;
+          animation-duration: 7s, 11s, 5s, 13s, 17s;
           animation-timing-function: ease-in-out;
           animation-iteration-count: infinite;
           transform-origin: 50% 60%;
-          will-change: translate, rotate, scale, transform;
+          will-change: translate, rotate, scale, transform, filter;
         }
         @media (prefers-reduced-motion: reduce) {
           .ch-trippy {

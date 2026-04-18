@@ -165,14 +165,6 @@
   --ch-hotpink:  oklch(0.68 0.30 345);
   --ch-cyan:     oklch(0.85 0.18 210);
 
-  /* ——— MCM additions ——— */
-  --ch-butter:   oklch(0.93 0.12 92);
-  --ch-mustard:  oklch(0.82 0.16 85);
-  --ch-taupe:    oklch(0.35 0.03 60);
-
-  /* Hard-offset midnight shadow used by MCM-flat cards */
-  --shadow-ink: 4px 4px 0 oklch(0.17 0.08 290);
-
   --radius: 0.75rem;
 
   --background: var(--ch-cream);
@@ -249,46 +241,6 @@
   --sidebar-ring: var(--ch-coral);
 }
 
-/* ---------------------------------------------------------------------
- * MCM (Mid-Century Modern) — the NEW default theme for Compliment Hotline.
- * Butter-paper page, citrus cards, coral + magenta accents, midnight ink.
- * ------------------------------------------------------------------- */
-.mcm {
-  --background: var(--ch-butter);
-  --foreground: var(--ch-midnight);
-  --card: var(--ch-citrus);
-  --card-foreground: var(--ch-midnight);
-  --popover: var(--ch-cream);
-  --popover-foreground: var(--ch-midnight);
-  --primary: var(--ch-coral);
-  --primary-foreground: var(--ch-cream);
-  --secondary: var(--ch-mustard);
-  --secondary-foreground: var(--ch-midnight);
-  --muted: oklch(0.89 0.12 85);
-  --muted-foreground: var(--ch-taupe);
-  --accent: var(--ch-magenta);
-  --accent-foreground: var(--ch-cream);
-  --destructive: oklch(0.55 0.24 28);
-  --border: oklch(0.17 0.08 290 / 18%);
-  --input: oklch(0.17 0.08 290 / 22%);
-  --ring: var(--ch-coral);
-
-  --chart-1: var(--ch-coral);
-  --chart-2: var(--ch-citrus);
-  --chart-3: var(--ch-mint);
-  --chart-4: var(--ch-magenta);
-  --chart-5: var(--ch-uv);
-
-  --sidebar: var(--ch-cream);
-  --sidebar-foreground: var(--ch-midnight);
-  --sidebar-primary: var(--ch-coral);
-  --sidebar-primary-foreground: var(--ch-cream);
-  --sidebar-accent: var(--ch-magenta);
-  --sidebar-accent-foreground: var(--ch-cream);
-  --sidebar-border: oklch(0.17 0.08 290 / 18%);
-  --sidebar-ring: var(--ch-coral);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -302,7 +254,7 @@
     overflow-x: hidden;
   }
   html {
-    color-scheme: light;
+    color-scheme: dark;
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
@@ -339,39 +291,3 @@
 }
 
 /* (superseded by the selective reduced-motion block above) */
-
-/* ---------------------------------------------------------------------
- * MCM texture utilities — paper-fiber noise + cross-hatch overlays.
- * Applied as ::after pseudo-elements. Parent must be `position: relative`.
- * ------------------------------------------------------------------- */
-@layer utilities {
-  .noise-paper {
-    position: relative;
-  }
-  .noise-paper::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.03;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.17, 0 0 0 0 0.08, 0 0 0 0 0.29, 0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-    background-size: 200px 200px;
-    background-repeat: repeat;
-  }
-
-  .noise-hatch {
-    position: relative;
-  }
-  .noise-hatch::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.06;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'><line x1='0' y1='4' x2='4' y2='0' stroke='oklch(0.17 0.08 290)' stroke-width='0.6'/></svg>");
-    background-size: 4px 4px;
-    background-repeat: repeat;
-  }
-}

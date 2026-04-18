@@ -132,7 +132,7 @@ export function RotaryRecorder() {
     return (
       <div className="text-center py-10">
         <div className="text-6xl mb-4">🎙</div>
-        <h3 className="font-display text-4xl text-coral mb-2">SENT</h3>
+        <h3 className="font-display text-4xl text-mint mb-2">SENT</h3>
         <p className="text-muted-foreground">Queued for moderation. It&apos;ll play on a real landline soon.</p>
         <Button variant="outline" onClick={reset} className="mt-6 rounded-full">
           Record another
@@ -169,7 +169,7 @@ export function RotaryRecorder() {
           onClick={state === "idle" ? start : state === "recording" ? stop : undefined}
         />
 
-        <div className="font-display text-4xl text-coral tabular-nums" aria-hidden>
+        <div className="font-display text-4xl text-citrus tabular-nums" aria-hidden>
           {String(seconds).padStart(2, "0")}
           <span className="text-muted-foreground/40">s</span>
           <span className="text-muted-foreground/30 text-lg"> / 30s</span>
