@@ -239,28 +239,126 @@ export function PsychedelicWaveform({
   }, [intensity]);
 
   return (
-    <div className={`relative w-full h-full ${className}`} aria-hidden>
-      <canvas
-        ref={canvasRef}
-        className="block w-full h-full"
-        style={{ background: "transparent" }}
-      />
-      {/* Scan lines overlay for CRT feel */}
+    <div
+      className={`relative w-full h-full ${className}`}
+      aria-hidden
+      style={{
+        // Philco-Predicta-style cream bezel
+        background: "oklch(0.93 0.04 82)",
+        padding: "24px",
+        borderRadius: "28px",
+        border: "2px solid oklch(0.17 0.08 290)",
+        boxShadow: "8px 8px 0 oklch(0.17 0.08 290)",
+      }}
+    >
+      {/* Inner CRT screen — hosts canvas + overlays */}
       <div
-        className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-40"
+        className="relative w-full h-full"
         style={{
-          backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 3px)",
+          background: "oklch(0.12 0.05 285)",
+          borderRadius: "18px",
+          overflow: "hidden",
+        }}
+      >
+        <canvas
+          ref={canvasRef}
+          className="block w-full h-full"
+          style={{ background: "transparent" }}
+        />
+        {/* Scan lines overlay for CRT feel */}
+        <div
+          className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-40"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 3px)",
+          }}
+        />
+        {/* Soft top/bottom vignette so the waveform fades into screen edges */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, oklch(0.12 0.05 285) 0%, transparent 15%, transparent 85%, oklch(0.12 0.05 285) 100%)",
+          }}
+        />
+      </div>
+
+      {/* ON LED — top-left of bezel */}
+      <div
+        className="ch-tv-led pointer-events-none absolute"
+        style={{
+          top: "10px",
+          left: "14px",
+          width: "8px",
+          height: "8px",
+          borderRadius: "9999px",
+          background: "oklch(0.72 0.21 22)",
+          boxShadow: "0 0 14px oklch(0.72 0.21 22 / 0.8)",
         }}
       />
-      {/* Soft top/bottom vignette so the waveform fades into page edges */}
+
+      {/* Tuning knob — right side of bezel, vertically centered */}
       <div
-        className="pointer-events-none absolute inset-0"
+        className="ch-tv-knob pointer-events-none absolute flex items-center justify-center"
         style={{
-          background:
-            "linear-gradient(180deg, var(--color-background, #0a0618) 0%, transparent 15%, transparent 85%, var(--color-background, #0a0618) 100%)",
+          top: "50%",
+          right: "2px",
+          transform: "translateY(-50%)",
+          width: "20px",
+          height: "20px",
+          borderRadius: "9999px",
+          background: "oklch(0.17 0.08 290)",
         }}
-      />
+      >
+        <div
+          style={{
+            width: "8px",
+            height: "8px",
+            borderRadius: "9999px",
+            background: "oklch(0.72 0.21 22)",
+          }}
+        />
+      </div>
+
+      {/* Model plate — bottom-right of bezel */}
+      <div
+        className="pointer-events-none absolute flex items-center justify-center"
+        style={{
+          bottom: "8px",
+          right: "12px",
+          width: "18px",
+          height: "8px",
+          background: "oklch(0.17 0.08 290 / 0.15)",
+          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+          fontSize: "6px",
+          letterSpacing: "0.05em",
+          color: "oklch(0.17 0.08 290 / 0.55)",
+          lineHeight: 1,
+        }}
+      >
+        MCM-62
+      </div>
+
+      <style>{`
+        @keyframes ch-tv-led-pulse {
+          0%, 100% { opacity: 0.55; }
+          50%      { opacity: 1; }
+        }
+        @keyframes ch-tv-knob-idle {
+          0%, 100% { transform: translateY(-50%) rotate(-8deg); }
+          50%      { transform: translateY(-50%) rotate(8deg); }
+        }
+        .ch-tv-led {
+          animation: ch-tv-led-pulse 1.4s ease-in-out infinite;
+        }
+        .ch-tv-knob {
+          animation: ch-tv-knob-idle 6s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .ch-tv-led { animation: none !important; opacity: 1 !important; }
+          .ch-tv-knob { animation: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

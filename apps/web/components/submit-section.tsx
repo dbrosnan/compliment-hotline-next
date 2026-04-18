@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent } from "@workspace/ui/components/card";
+import { MCMCard, MCMCardContent } from "@/components/mcm-card";
 import { BorderBeam } from "@workspace/ui/components/border-beam";
 import { SectionHeading } from "./section-heading";
 import { RotaryRecorder } from "./rotary-recorder";
@@ -16,10 +16,10 @@ export function SubmitSection() {
           className="mb-10"
         />
 
-        <Card className="relative w-full bg-card/70 border-border/25 backdrop-blur-sm shadow-md overflow-hidden">
+        <MCMCard variant="citrus" tone="noise" className="relative w-full overflow-hidden">
           {/* Two counter-rotating comet beams for a "shooting star around
-              the card" effect — same citrus→coral gradient as the old
-              pick-up button. */}
+              the card" effect — citrus→coral + magenta→citrus, the MCM
+              neon accent we agreed stays. */}
           <BorderBeam
             size={220}
             duration={9}
@@ -36,10 +36,10 @@ export function SubmitSection() {
             colorTo="oklch(0.89 0.17 92 / 0.85)"
             borderWidth={1.2}
           />
-          <CardContent className="w-full p-6 md:p-10">
+          <MCMCardContent className="w-full p-6 md:p-10">
             <RotaryRecorder />
-          </CardContent>
-        </Card>
+          </MCMCardContent>
+        </MCMCard>
       </div>
     </section>
   );

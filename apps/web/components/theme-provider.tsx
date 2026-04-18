@@ -10,7 +10,8 @@ function ThemeProvider({
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="dark"
+      defaultTheme="mcm"
+      themes={["mcm", "dark", "light"]}
       enableSystem={false}
       disableTransitionOnChange
       {...props}

@@ -25,10 +25,10 @@ export function Counter() {
         {digits.map((d, i) => (
           <div
             key={i}
-            className="relative flex h-20 w-14 items-center justify-center rounded-lg border border-border/30 bg-background/80 font-display text-4xl text-citrus shadow-inner md:h-28 md:w-20 md:text-6xl"
+            className="relative flex h-20 w-14 items-center justify-center rounded-md border-2 border-[oklch(0.17_0.08_290_/_0.85)] bg-citrus font-display text-4xl text-midnight shadow-[4px_4px_0_oklch(0.17_0.08_290)] md:h-28 md:w-20 md:text-6xl"
           >
             <span className="relative z-10">{d}</span>
-            <div className="absolute inset-x-0 top-1/2 border-t border-border/15" />
+            <div className="absolute inset-x-0 top-1/2 border-t border-[oklch(0.17_0.08_290_/_0.2)]" />
           </div>
         ))}
       </div>

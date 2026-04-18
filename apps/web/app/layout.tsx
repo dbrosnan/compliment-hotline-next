@@ -62,6 +62,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       lang="en"
       suppressHydrationWarning
       className={cn(
+        "mcm",
         "antialiased",
         fontDisplay.variable,
         fontSans.variable,
@@ -70,7 +71,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       )}
     >
       <body>
-        <ThemeProvider defaultTheme="dark">{children}</ThemeProvider>
+        <ThemeProvider defaultTheme="mcm">{children}</ThemeProvider>
       </body>
     </html>
   );

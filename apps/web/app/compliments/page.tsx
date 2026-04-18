@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@workspace/ui/components/button";
 import { Input } from "@workspace/ui/components/input";
 import { Label } from "@workspace/ui/components/label";
-import { Card, CardContent } from "@workspace/ui/components/card";
+import { MCMCard, MCMCardContent } from "@/components/mcm-card";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 
 type Row = {
@@ -23,14 +23,14 @@ type Row = {
  *  rejected dims. */
 const STATUS_ROW_BG: Record<Row["status"], string> = {
   pending: "",
-  approved: "bg-mint/10 hover:bg-mint/15 border-l-4 border-l-mint",
+  approved: "border-l-4 border-l-coral",
   rejected: "opacity-60",
 };
 
-/** Status pill — approved is unmistakably green. */
+/** Status pill — MCM palette: mustard pending, coral approved. */
 const STATUS_PILL: Record<Row["status"], string> = {
-  pending: "bg-citrus/15 text-citrus border border-citrus/30",
-  approved: "bg-mint/20 text-mint border border-mint/40",
+  pending: "bg-mustard text-midnight border border-midnight/50",
+  approved: "bg-coral text-cream border border-coral",
   rejected: "bg-destructive/15 text-destructive border border-destructive/30",
 };
 
@@ -220,10 +220,10 @@ export default function ComplimentsAdminPage() {
   if (!loggedIn) {
     return (
       <main className="min-h-svh flex items-center justify-center p-6">
-        <Card className="w-full max-w-sm bg-card/70 border-border/40">
-          <CardContent className="p-6 space-y-4">
+        <MCMCard variant="cream" tone="noise" className="w-full max-w-sm">
+          <MCMCardContent className="p-6 space-y-4">
             <div>
-              <h1 className="font-display text-3xl text-citrus leading-none">HOTLINE</h1>
+              <h1 className="font-display text-3xl text-coral leading-none">HOTLINE</h1>
               <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground mt-1">admin / moderation</p>
             </div>
             <div className="space-y-2">
@@ -244,8 +244,8 @@ export default function ComplimentsAdminPage() {
             <Button onClick={login} className="w-full rounded-full" disabled={!token}>
               Unlock
             </Button>
-          </CardContent>
-        </Card>
+          </MCMCardContent>
+        </MCMCard>
       </main>
     );
   }
@@ -256,7 +256,7 @@ export default function ComplimentsAdminPage() {
         {/* Header */}
         <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/40">
           <div>
-            <h1 className="font-display text-4xl text-citrus leading-none">HOTLINE / MOD</h1>
+            <h1 className="font-display text-4xl text-coral leading-none">HOTLINE / MOD</h1>
             <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground mt-1">
               {items ? `${items.length} compliment${items.length === 1 ? "" : "s"} in database` : "loading…"}
             </p>
@@ -302,24 +302,26 @@ export default function ComplimentsAdminPage() {
         </header>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-2">
-          {(["all", "pending", "approved", "rejected"] as const).map((s) => (
-            <Button
-              key={s}
-              size="sm"
-              variant={filter === s ? "default" : "outline"}
-              onClick={() => setFilter(s)}
-              className="rounded-full"
-            >
-              {s} ({counts[s]})
-            </Button>
-          ))}
-        </div>
+        <MCMCard variant="mustard" tone="flat">
+          <MCMCardContent className="p-3 flex flex-wrap gap-2">
+            {(["all", "pending", "approved", "rejected"] as const).map((s) => (
+              <Button
+                key={s}
+                size="sm"
+                variant={filter === s ? "default" : "outline"}
+                onClick={() => setFilter(s)}
+                className="rounded-full"
+              >
+                {s} ({counts[s]})
+              </Button>
+            ))}
+          </MCMCardContent>
+        </MCMCard>
 
         {/* Bulk bar */}
         {selected.size > 0 && (
-          <Card className="bg-primary/10 border-primary/40">
-            <CardContent className="p-3 flex flex-wrap items-center gap-3">
+          <MCMCard variant="mustard" tone="flat">
+            <MCMCardContent className="p-3 flex flex-wrap items-center gap-3">
               <span className="font-mono text-sm">{selected.size} selected</span>
               <div className="ml-auto flex gap-2">
                 <Button size="sm" onClick={approveBulk} disabled={busy}>
@@ -332,12 +334,13 @@ export default function ComplimentsAdminPage() {
                   Clear
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </MCMCardContent>
+          </MCMCard>
         )}
 
         {/* Table — desktop only (hidden on <md) */}
-        <div className="hidden md:block card bg-card/40 border border-border/30 rounded-lg overflow-x-auto">
+        <MCMCard variant="cream" tone="flat" className="hidden md:block overflow-x-auto">
+          <MCMCardContent className="p-0">
           <table className="w-full text-sm" aria-label="All compliments">
             <caption className="sr-only">All compliments across every status, filtered by the tabs above.</caption>
             <thead className="bg-background/40">
@@ -494,34 +497,37 @@ export default function ComplimentsAdminPage() {
               ))}
             </tbody>
           </table>
-        </div>
+          </MCMCardContent>
+        </MCMCard>
 
         {/* Mobile card list — stacked vertically, all actions inline,
             no horizontal scrolling needed. Renders only on <md. */}
         <div className="md:hidden space-y-3">
           {filtered === null && (
-            <Card className="bg-card/40 border-border/30">
-              <CardContent className="p-6 text-center text-muted-foreground">
+            <MCMCard variant="cream" tone="flat">
+              <MCMCardContent className="p-6 text-center text-muted-foreground">
                 Loading…
-              </CardContent>
-            </Card>
+              </MCMCardContent>
+            </MCMCard>
           )}
           {filtered && filtered.length === 0 && (
-            <Card className="bg-card/40 border-border/30">
-              <CardContent className="p-10 text-center">
+            <MCMCard variant="cream" tone="flat">
+              <MCMCardContent className="p-10 text-center">
                 <div className="text-4xl mb-2">📭</div>
                 <div className="text-muted-foreground">
                   No compliments match this filter.
                 </div>
-              </CardContent>
-            </Card>
+              </MCMCardContent>
+            </MCMCard>
           )}
           {filtered?.map((r) => (
-            <Card
+            <MCMCard
               key={r.id}
-              className={`bg-card/40 border-border/30 overflow-hidden ${STATUS_ROW_BG[r.status]}`}
+              variant={r.status === "approved" ? "mustard" : "citrus"}
+              tone="noise"
+              className={`overflow-hidden ${STATUS_ROW_BG[r.status]}`}
             >
-              <CardContent className="p-4 space-y-3">
+              <MCMCardContent className="p-4 space-y-3">
                 {/* Row 1: select + id + status pill + time */}
                 <div className="flex items-center gap-2 flex-wrap">
                   <input
@@ -640,8 +646,8 @@ export default function ComplimentsAdminPage() {
                     <span aria-hidden className="mr-1">🗑</span>Delete
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </MCMCardContent>
+            </MCMCard>
           ))}
         </div>
 

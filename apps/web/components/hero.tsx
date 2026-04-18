@@ -94,37 +94,64 @@ export function Hero() {
   };
 
   return (
-    <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
-      {/* Remotion hero video — our 18s animated reel of phones + disco ball +
-          cart + record invite. Bumped to 75% opacity so it actually reads. */}
+    <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden bg-background">
+      {/* Remotion hero video framed as a "TV in the living room" — cream
+          bezel, hard midnight offset shadow, pulsing coral "ON" LED, and
+          a mono bezel label. The TV frame does the containment; the
+          video itself plays full-opacity inside its bezel. */}
       {videoOk && (
-        <video
-          ref={videoRef}
-          className="absolute inset-0 w-full h-full object-contain opacity-55"
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
           style={{
-            transform: "scale(0.85)",
-            transformOrigin: "center",
-            // Feather the video edges so its own background color never
-            // shows as a hard rectangle against the page bg. Radial mask
-            // fades the corners into transparency; mix-blend-mode:screen
-            // then makes any remaining dark video pixels drop to the
-            // page bg instead of rendering as a lighter box.
-            maskImage:
-              "radial-gradient(ellipse 75% 75% at center, black 55%, transparent 95%)",
-            WebkitMaskImage:
-              "radial-gradient(ellipse 75% 75% at center, black 55%, transparent 95%)",
-            mixBlendMode: "screen",
+            width: "min(92vw, 960px)",
+            aspectRatio: "16 / 9",
+            border: "8px solid oklch(0.93 0.04 82)",
+            borderRadius: "18px",
+            boxShadow: "8px 8px 0 oklch(0.17 0.08 290)",
+            overflow: "hidden",
+            background: "oklch(0.17 0.08 290)",
           }}
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/hero-poster.jpg"
-          onError={() => setVideoOk(false)}
           aria-hidden
         >
-          <source src="/hero.mp4" type="video/mp4" />
-        </video>
+          <video
+            ref={videoRef}
+            className="w-full h-full object-contain"
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster="/hero-poster.jpg"
+            onError={() => setVideoOk(false)}
+            aria-hidden
+          >
+            <source src="/hero.mp4" type="video/mp4" />
+          </video>
+          {/* "ON" LED — top-left bezel, coral with pulse */}
+          <span
+            className="absolute top-[-14px] left-[-1px] block rounded-full"
+            style={{
+              width: 6,
+              height: 6,
+              background: "oklch(0.72 0.21 22)",
+              boxShadow: "0 0 12px 2px oklch(0.72 0.21 22)",
+              animation: "ch-led-pulse 1.2s ease-in-out infinite",
+            }}
+          />
+          {/* Bezel label — bottom-right, mono, uppercase */}
+          <span
+            className="font-mono absolute"
+            style={{
+              bottom: -18,
+              right: 4,
+              fontSize: 9,
+              textTransform: "uppercase",
+              letterSpacing: "0.25em",
+              color: "oklch(0.17 0.08 290 / 0.55)",
+            }}
+          >
+            Compliment Hotline TV
+          </span>
+        </div>
       )}
 
       {/* Kinetic phone parade — 6 floating + ringing rotary phones */}
@@ -141,29 +168,8 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Scanlines */}
-      <div
-        className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-40"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 3px)",
-        }}
-        aria-hidden
-      />
-      {/* Layered vignette: top+bottom fade to bg so content has contrast */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/50 via-background/20 to-background/80" aria-hidden />
-      {/* Soft radial under the copy column so the tagline + CTA stay readable */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        aria-hidden
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 50% 50%, oklch(0.17 0.08 290 / 0.65) 0%, transparent 70%)",
-        }}
-      />
-
       <div className="relative z-10 mx-auto w-full max-w-5xl px-6 py-12 text-center">
-        <p className="font-mono mb-6 text-xs uppercase tracking-[0.3em] text-muted-foreground opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:1400ms]">
+        <p className="font-mono mb-6 text-xs uppercase tracking-[0.3em] opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:1400ms]" style={{ color: "oklch(0.17 0.08 290 / 0.7)" }}>
           📞 An analog art piece for a digital disco
         </p>
 
@@ -175,7 +181,6 @@ export function Hero() {
               style={{
                 animation: mounted ? "ch-drop 700ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards" : "none",
                 animationDelay: `${i * 60}ms`,
-                textShadow: "2px 0 0 oklch(0.70 0.28 338 / 0.7), -2px 0 0 oklch(0.89 0.15 162 / 0.7)",
               }}
             >
               {ch}
@@ -183,12 +188,12 @@ export function Hero() {
           ))}
         </h1>
 
-        <div className="font-display mt-2 text-[clamp(1.75rem,7vw,4.5rem)] leading-none tracking-widest text-accent">
+        <div className="font-display mt-2 text-[clamp(1.75rem,7vw,4.5rem)] leading-none tracking-widest text-coral">
           HOTLINE
         </div>
 
         <p
-          className="font-serif italic mt-6 text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:1600ms]"
+          className="font-serif italic mt-6 text-base sm:text-lg md:text-xl text-foreground leading-relaxed opacity-0 animate-[ch-fade_800ms_ease_forwards] [animation-delay:1600ms]"
           style={{ display: "block", width: "100%", maxWidth: "36rem", marginLeft: "auto", marginRight: "auto" }}
         >
           Pick up the phone. Hear a compliment from a stranger. Leave one for the next person.
@@ -269,6 +274,10 @@ export function Hero() {
           96% { transform: rotate(3deg); }
           98% { transform: rotate(-1.5deg); }
         }
+        @keyframes ch-led-pulse {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
         @media (prefers-reduced-motion: reduce) {
           [style*="animation"] { animation: none !important; }
         }
@@ -293,16 +302,10 @@ function HandsetSVG() {
       aria-hidden
       className="h-40 w-40 sm:h-52 sm:w-52 md:h-56 md:w-56 drop-shadow-[0_10px_40px_oklch(0.72_0.21_22/0.55)]"
     >
-      <defs>
-        <linearGradient id="handsetGradHero" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="oklch(0.72 0.21 22)" />
-          <stop offset="100%" stopColor="oklch(0.70 0.28 338)" />
-        </linearGradient>
-      </defs>
       <path
         d="M30 45 C30 25, 50 15, 70 25 L95 50 C115 70, 105 90, 85 100 L75 90 C65 80, 55 70, 45 60 Z"
-        fill="url(#handsetGradHero)"
-        stroke="oklch(0.93 0.04 82)"
+        fill="oklch(0.72 0.21 22)"
+        stroke="oklch(0.17 0.08 290)"
         strokeWidth="2"
       />
       <circle cx="40" cy="40" r="3" fill="oklch(0.93 0.04 82)" opacity="0.6" />

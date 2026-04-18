@@ -10,6 +10,9 @@ type Props = {
  * Shared marketing section header: small uppercase eyebrow in font-mono,
  * big h2 in font-display, optional tagline in font-serif italic.
  *
+ * MCM palette: butter-yellow page → coral eyebrow, midnight title,
+ * muted-foreground (taupe) tagline.
+ *
  * The tagline <p> carries an explicit `style` override because Tailwind v4
  * + shadcn Lyra collapses `mx-auto max-w-*` without `w-full` to its
  * narrowest unbreakable content (see DESIGN.md "Known quirks").
@@ -18,7 +21,7 @@ export function SectionHeading({ eyebrow, title, tagline, id, className }: Props
   return (
     <div className={`text-center ${className ?? ""}`} id={id}>
       {eyebrow && (
-        <p className="font-mono mb-4 text-xs uppercase tracking-[0.3em] text-muted-foreground">
+        <p className="font-mono mb-4 text-xs uppercase tracking-[0.3em] text-coral">
           {eyebrow}
         </p>
       )}

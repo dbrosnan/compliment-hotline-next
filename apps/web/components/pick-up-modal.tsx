@@ -88,7 +88,7 @@ export function PickUpModal({
       >
         <LiquidLightBackdrop phase={phase} pulseKey={audio.pulses.length} />
 
-        <div className="ch-card relative rounded-3xl p-8 md:p-14 text-center backdrop-blur-md backdrop-saturate-150 bg-card/55 border border-border/25">
+        <div className="ch-card relative rounded-3xl p-8 md:p-14 text-center backdrop-blur-md backdrop-saturate-150 bg-[oklch(0.17_0.08_290_/_0.85)] border border-border/25">
           <BorderBeam
             size={120}
             duration={8}

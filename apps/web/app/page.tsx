@@ -1,10 +1,11 @@
 import { Hero } from "@/components/hero";
 import { ComplimentMarquee } from "@/components/compliment-marquee";
-import { CoiledCord } from "@/components/coiled-cord";
 import { HowItWorks } from "@/components/how-it-works";
 import { SubmitSection } from "@/components/submit-section";
 import { Footer } from "@/components/footer";
 import { PsychedelicWaveform } from "@/components/psychedelic-waveform";
+import { MCMDivider } from "@/components/mcm-divider";
+import { Boomerang, KidneyBean, Sputnik } from "@/components/mcm-ornaments";
 
 export default function Page() {
   return (
@@ -16,9 +17,10 @@ export default function Page() {
             z-10: horizontal dimming spotlight so the cards pop off
             z-20: the marquee cards themselves
           `isolation: isolate` locks this context so no ancestor can
-          reorder the children. */}
+          reorder the children. Height bumped to 970/1200 to accommodate
+          the MCM bezel frame added by Agent B. */}
       <section
-        className="relative w-full min-h-[920px] md:min-h-[1140px] overflow-hidden bg-background"
+        className="relative w-full min-h-[970px] md:min-h-[1200px] overflow-hidden bg-background"
         style={{ isolation: "isolate" }}
       >
         <div className="absolute inset-0 z-0" aria-hidden>
@@ -38,11 +40,61 @@ export default function Page() {
           <ComplimentMarquee />
         </div>
       </section>
-      <CoiledCord />
+      <MCMDivider variant="starburst" />
       <HowItWorks />
-      <CoiledCord flipped />
+      <MCMDivider variant="curve" />
       <SubmitSection />
       <Footer />
+
+      {/* Scattered MCM ornaments — page-level decorative layer. Pointer-events
+          disabled so they never interfere with real interactions. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "8vh",
+            right: "3vw",
+            opacity: 0.6,
+            pointerEvents: "none",
+          }}
+        >
+          <Sputnik size={56} color="oklch(0.72 0.21 22)" />
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            top: "120vh",
+            left: "2vw",
+            opacity: 0.5,
+            transform: "rotate(-15deg)",
+          }}
+        >
+          <Boomerang size={64} color="oklch(0.70 0.28 338)" />
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            bottom: "30vh",
+            right: "5vw",
+            opacity: 0.55,
+          }}
+        >
+          <KidneyBean size={80} />
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            top: "180vh",
+            left: "50vw",
+            opacity: 0.5,
+          }}
+        >
+          <Sputnik size={40} color="oklch(0.89 0.15 162)" />
+        </div>
+      </div>
     </main>
   );
 }
