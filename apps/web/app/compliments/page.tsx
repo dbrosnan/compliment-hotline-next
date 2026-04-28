@@ -410,11 +410,7 @@ export default function ComplimentsAdminPage() {
                   <td className="p-3 text-foreground/90 truncate max-w-[8rem]">{r.name || <span className="italic text-muted-foreground/60">anonymous</span>}</td>
                   <td className="p-3">
                     {r.audio_key ? (
-                      <audio
-                        controls
-                        src={`/api/admin/audio/${r.id}`}
-                        className="h-8 w-full max-w-sm"
-                      />
+                      <AdminAudio id={r.id} className="h-8 w-full max-w-sm" />
                     ) : (
                       <span className="text-xs italic text-muted-foreground/60">(no audio)</span>
                     )}
@@ -558,12 +554,7 @@ export default function ComplimentsAdminPage() {
 
                 {/* Row 3: audio player + transcript */}
                 {r.audio_key ? (
-                  <audio
-                    controls
-                    preload="none"
-                    src={`/api/admin/audio/${r.id}`}
-                    className="h-9 w-full"
-                  />
+                  <AdminAudio id={r.id} className="h-9 w-full" />
                 ) : (
                   <span className="text-xs italic text-muted-foreground/60">(no audio)</span>
                 )}
@@ -660,5 +651,44 @@ export default function ComplimentsAdminPage() {
         </div>
       )}
     </main>
+  );
+}
+
+/**
+ * Audio player for the moderation queue.
+ *
+ * iOS Safari can't decode legacy webm/opus uploads — the native <audio>
+ * element fires `error` instead of playing. When that happens we surface
+ * a download / open-in-new-tab fallback so the moderator can still
+ * preview the recording on iPhone before approving or rejecting.
+ */
+function AdminAudio({ id, className }: { id: number; className?: string }) {
+  const [failed, setFailed] = useState(false);
+  const src = `/api/admin/audio/${id}`;
+  return (
+    <div className="space-y-1">
+      {!failed && (
+        <audio
+          controls
+          preload="metadata"
+          playsInline
+          src={src}
+          className={className}
+          onError={() => setFailed(true)}
+        />
+      )}
+      {failed && (
+        <div className="text-xs text-muted-foreground">
+          <span className="text-destructive">This recording can&apos;t play on iOS Safari (legacy webm/opus).</span>{" "}
+          <a href={src} download={`compliment-${id}.webm`} className="underline text-citrus">
+            Download
+          </a>{" "}
+          ·{" "}
+          <a href={src} target="_blank" rel="noopener noreferrer" className="underline text-citrus">
+            Open in new tab
+          </a>
+        </div>
+      )}
+    </div>
   );
 }
